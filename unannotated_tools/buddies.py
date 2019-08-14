@@ -38,7 +38,7 @@ class NP:
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <gold-document> <unannotated-documents-list>" % (sys.argv[0])
+        print("Usage: %s <gold-document> <unannotated-documents-list>" % (sys.argv[0]))
         sys.exit(1)
 
     #read in gold chains
@@ -48,10 +48,9 @@ if __name__ == "__main__":
     pos_tags = reconcile.getPOS(sys.argv[1])
     tokens = reconcile.getTokens(sys.argv[1])
 
-    for key in gold_chains.keys():
+    for key in list(gold_chains.keys()):
         for mention in gold_chains[key]:
-            if mention.pprint() not in map(lambda x : x.pprint(),
-                    gold_chain_text[key]):
+            if mention.pprint() not in [x.pprint() for x in gold_chain_text[key]]:
                 #np_pos = [x.getATTR("TAG") for x in \
                 #        pos_tags.getOverlapping(mention)]
                 #np_tok = [x.getText() for x in \
@@ -63,12 +62,11 @@ if __name__ == "__main__":
         #print "-"*25
 
     tracked_nps = []
-    for key in gold_chain_text.keys():
+    for key in list(gold_chain_text.keys()):
         for mention in gold_chain_text[key]:
             new_np = NP()
             new_np.text = mention.pprint().strip()
-            new_np.gold_buddies.extend(list(set(map(lambda x :
-                x.pprint().strip(), gold_chain_text[key])) -
+            new_np.gold_buddies.extend(list(set([x.pprint().strip() for x in gold_chain_text[key]]) -
                 set([mention.pprint().strip()])))
             tracked_nps.append(new_np)
 
@@ -88,8 +86,7 @@ if __name__ == "__main__":
     #cycle through unannotated documents
     ufile =[]
     with open(sys.argv[2], 'r') as unannotated_file_list:
-        ufiles = filter(lambda x : not x.startswith("#"),
-                unannotated_file_list.readlines())
+        ufiles = [x for x in unannotated_file_list.readlines() if not x.startswith("#")]
 
     #TODO: going to need to do a deeper analysis of the unannotated
     #documents..., need real POS tags and NE recognition
