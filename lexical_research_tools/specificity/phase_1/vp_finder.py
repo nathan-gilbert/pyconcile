@@ -79,7 +79,7 @@ def add_stats(text, head, anaphor, doc, nouns, head2text):
     #print "{0} => {1}".format(text, head)
 
     #then look for thangs
-    if text not in nouns.keys():
+    if text not in list(nouns.keys()):
         nouns[text] = VirtualPronoun(text)
         nouns[text].updateDocs(doc.getName())
     else:
@@ -189,7 +189,7 @@ def add_stats(text, head, anaphor, doc, nouns, head2text):
 
     #find which chain the anaphor is from and add the chain statistics
     anaphor_chain = None
-    for chain in doc.gold_chains.keys():
+    for chain in list(doc.gold_chains.keys()):
         for mention in doc.gold_chains[chain]:
             if anaphor == mention:
                 anaphor_chain = chain
@@ -220,7 +220,7 @@ def add_stats(text, head, anaphor, doc, nouns, head2text):
         chain_coverage = float(covered_sentences) / len(doc.sentences)
         nouns[text].chain_coverage[doc.getName()] = chain_coverage
 
-        for chain in doc.gold_chains.keys():
+        for chain in list(doc.gold_chains.keys()):
             if chain == anaphor_chain:
                 continue
             if len(doc.gold_chains[chain]) > chain_length:
@@ -241,7 +241,7 @@ def add_stats(text, head, anaphor, doc, nouns, head2text):
             if specificity_utils.isProper(mention_np):
                 common_only = False
 
-        if chain_name not in nouns[text].nom_chain_only.keys():
+        if chain_name not in list(nouns[text].nom_chain_only.keys()):
             nouns[text].nom_chain_only[chain_name] = common_only
     else:
         sys.stderr.write("Anaphor chain not found?\n")
@@ -275,7 +275,7 @@ def add_stats(text, head, anaphor, doc, nouns, head2text):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist> +tru" % (sys.argv[0])
+        print("Usage: %s <filelist> +tru" % (sys.argv[0]))
         sys.exit(1)
 
     TRUE_PRONOUNS = True if "+tru" in sys.argv else False
@@ -283,8 +283,7 @@ if __name__ == "__main__":
 
     files = []
     with open(sys.argv[1], 'r') as inFile:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            inFile.readlines()))
+        files.extend([x for x in inFile.readlines() if not x.startswith("#")])
 
     #TODO figure out the stats to match pronoun profiles
     SENT_DIST_3  = 0.50  #70% of antecedents are within 3 sentences
@@ -345,15 +344,15 @@ if __name__ == "__main__":
     sys.stderr.write("\r \r\n")
 
     head_counts = {}
-    for head in head2text.keys():
+    for head in list(head2text.keys()):
         total_count = 0
         for text in head2text[head]:
             total_count += nouns[text].count
         head_counts[head] = total_count
 
-    sorted_head_counts = sorted(head_counts.iteritems(), key=operator.itemgetter(1), reverse=True)
-    print "{0:17} {1:3} {2:3} {3:5} {4:5} {5:4} {6:4} {7:4} {8:4} {9:4} {10:4} {11:4} {12:4} {13:>4} {14:>4} {15:>4} {16:>4}".format("head","C","d","MD","MMD", "D3", "nPr", "aPr", "ba","As", "ss", "prp", "nc","Cs", "Cc","aidf", "bd")
-    print
+    sorted_head_counts = sorted(iter(head_counts.items()), key=operator.itemgetter(1), reverse=True)
+    print("{0:17} {1:3} {2:3} {3:5} {4:5} {5:4} {6:4} {7:4} {8:4} {9:4} {10:4} {11:4} {12:4} {13:>4} {14:>4} {15:>4} {16:>4}".format("head","C","d","MD","MMD", "D3", "nPr", "aPr", "ba","As", "ss", "prp", "nc","Cs", "Cc","aidf", "bd"))
+    print()
 
     for hc in sorted_head_counts:
         total_zero_sentence = 0
@@ -408,16 +407,16 @@ if __name__ == "__main__":
             total_oth_mods      += len(nouns[text].other_modifiers)
 
             #total_nom_chains    += len(filter(lambda x : x, nouns[text].nom_chain_only))
-            chain_sizes.append(float(sum(nouns[text].chain_size.values())) / len(nouns[text].docs.keys()))
-            chain_coverage.append(float(sum(nouns[text].chain_coverage.values())) / len(nouns[text].docs.keys()))
+            chain_sizes.append(float(sum(nouns[text].chain_size.values())) / len(list(nouns[text].docs.keys())))
+            chain_coverage.append(float(sum(nouns[text].chain_coverage.values())) / len(list(nouns[text].docs.keys())))
             #count up all the chains
             for chain in nouns[text].chains:
                 if chain not in total_chains:
                     total_chains.append(chain)
-            for key in nouns[text].docs.keys():
+            for key in list(nouns[text].docs.keys()):
                 total_docs[key] = total_docs.get(key, 0) + nouns[text].docs[key]
 
-            for key in nouns[text].nom_chain_only.keys():
+            for key in list(nouns[text].nom_chain_only.keys()):
                 total_nom_chains[key] = nouns[text].nom_chain_only[key]
 
         if len(total_docs) < docs_needed:
@@ -427,17 +426,17 @@ if __name__ == "__main__":
         mean_chain_coverage = float(sum(chain_coverage)) / len(chain_coverage)
 
         tf = []
-        for key in total_docs.keys():
+        for key in list(total_docs.keys()):
             d_tf = (1 + math.log(total_docs[key])) #* math.log(float(len(files))) # / len(total_docs.keys()))
             tf.append(d_tf)
-        mean_tf_idf = (float(sum(tf)) / len(tf)) * math.log(float(len(files)) / len(total_docs.keys()))
+        mean_tf_idf = (float(sum(tf)) / len(tf)) * math.log(float(len(files)) / len(list(total_docs.keys())))
 
         total_one_sentence += total_zero_sentence
         total_two_sentence += total_one_sentence
         total_three_sentence+= total_two_sentence
 
-        mentions_per_doc        = float(head_counts[hc[0]]) / len(total_docs.keys())
-        median_mentions_per_doc = specificity_utils.median(total_docs.values())
+        mentions_per_doc        = float(head_counts[hc[0]]) / len(list(total_docs.keys()))
+        median_mentions_per_doc = specificity_utils.median(list(total_docs.values()))
         pro_count = 0
 
         #total_mods = total_adj_mods + total_prp_mods + total_nom_mods + total_oth_mods
@@ -460,7 +459,7 @@ if __name__ == "__main__":
 
         #print "Nom chains: {0}".format(len(filter(lambda x : x, total_nom_chains.values())))
         #print "Total chains: {0}".format(len(total_chains))
-        nom_chain_percentage = float(len(filter(lambda x : x, total_nom_chains.values()))) / len(total_chains)
+        nom_chain_percentage = float(len([x for x in list(total_nom_chains.values()) if x])) / len(total_chains)
 
         #criteria 1
         sent_3 = float(total_three_sentence) / head_counts[hc[0]]
@@ -512,10 +511,10 @@ if __name__ == "__main__":
             label = "*={0}".format(pro_count)
 
         #hc[1] and head_counts[hc[0]] should be the same thing...
-        print "{0:15} {1:4} {2:3} {3:5.2f} {4:5.2f} {5:.2f} {6:.2f} {7:.2f} {8:.2f} {9:.2f} {10:.2f} {11:.2f} {12:.2f} {13:5.2f} {14:.2f} {15:.2f} {16:.2f} {17}".format(
+        print("{0:15} {1:4} {2:3} {3:5.2f} {4:5.2f} {5:.2f} {6:.2f} {7:.2f} {8:.2f} {9:.2f} {10:.2f} {11:.2f} {12:.2f} {13:5.2f} {14:.2f} {15:.2f} {16:.2f} {17}".format(
                 hc[0],
                 hc[1],
-                len(total_docs.keys()),
+                len(list(total_docs.keys())),
                 #total_zero_sentence,
                 #float(total_zero_sentence) / head_counts[hc[0]],
                 #total_one_sentence,
@@ -550,6 +549,6 @@ if __name__ == "__main__":
                 #percentage_of_prp_mods,
                 #percentage_of_nom_mods,
                 label
-                )
+                ))
         #print
 

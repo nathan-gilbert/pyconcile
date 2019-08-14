@@ -14,17 +14,16 @@ from pyconcile import utils
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list> <vp-list> [-hobbs|-rap|-rec|-sieve]" % (sys.argv[0])
+        print("Usage: %s <file-list> <vp-list> [-hobbs|-rap|-rec|-sieve]" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"), fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     VPs = []
     with open(sys.argv[2], 'r') as vpList:
-        VPs.extend(map(string.strip, filter(lambda x : not x.startswith("#"),
-            vpList.readlines())))
+        VPs.extend(list(map(string.strip, [x for x in vpList.readlines() if not x.startswith("#")])))
 
     total_scores = {"vps_guessed" : 0,
                     "vps_correct" : 0
@@ -33,7 +32,7 @@ if __name__ == "__main__":
     RESPONSE_TYPE = ""
     for f in files:
         f=f.strip()
-        print "Working on file: {0}".format(f)
+        print("Working on file: {0}".format(f))
         gold_chains = reconcile.getGoldChains(f)
         pairs = []
         if "-hobbs" in sys.argv:
@@ -81,26 +80,26 @@ if __name__ == "__main__":
                 if ana_head in VPs:
                     pairs.append(pair)
         else:
-            print "Please select response type."
+            print("Please select response type.")
             sys.exit(1)
 
         labeled_annots = reconcile.labelCorrectPairs(gold_chains, pairs)
         for pair in labeled_annots:
             total_scores["vps_guessed"] += 1
             if pair[2]:
-                print pair[0].ppprint() + " <- " + pair[1].ppprint()
+                print(pair[0].ppprint() + " <- " + pair[1].ppprint())
                 total_scores["vps_correct"] += 1
             else:
-                print pair[0].ppprint() + " <- " + pair[1].ppprint() + "*"
+                print(pair[0].ppprint() + " <- " + pair[1].ppprint() + "*")
 
-    print "="*72
-    print "{0} accuracy".format(RESPONSE_TYPE)
+    print("="*72)
+    print("{0} accuracy".format(RESPONSE_TYPE))
     try:
         result = total_scores["vps_correct" ] / float(total_scores["vps_guessed"])
-        print "Total: {0} / {1} = {2:0.2f}".format(total_scores["vps_correct"],
-                total_scores["vps_guessed"], result)
+        print("Total: {0} / {1} = {2:0.2f}".format(total_scores["vps_correct"],
+                total_scores["vps_guessed"], result))
     except:
         result = 0.0
-        print "Total: {0} / {1} = {2:0.2f}".format(total_scores["vps_correct"],
-                total_scores["vps_guessed"], result)
+        print("Total: {0} / {1} = {2:0.2f}".format(total_scores["vps_correct"],
+                total_scores["vps_guessed"], result))
 

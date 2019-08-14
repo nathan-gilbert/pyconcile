@@ -21,7 +21,7 @@ class Word:
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print "Usage: %s <default> <not-default>" % (sys.argv[0])
+        print("Usage: %s <default> <not-default>" % (sys.argv[0]))
         sys.exit(1)
 
     default_words = {}
@@ -47,7 +47,7 @@ if __name__ == "__main__":
             other_words[word] = (total_correct, total)
 
     words = []
-    for key in list(set(default_words.keys() + other_words.keys())):
+    for key in list(set(list(default_words.keys()) + list(other_words.keys()))):
         d_word = default_words.get(key, (0,0))
         o_word = other_words.get(key, (0,0))
         diff_correct = o_word[0] - d_word[0]
@@ -58,4 +58,4 @@ if __name__ == "__main__":
     s_words = sorted(s_words, key=lambda x : x.percent_correct(), reverse=True)
 
     for w in s_words:
-        print "{0:0.2f} | {1:3} | {2:3} | {3}".format(w.percent_correct(), w.count, w.total, w.w)
+        print("{0:0.2f} | {1:3} | {2:3} | {3}".format(w.percent_correct(), w.count, w.total, w.w))

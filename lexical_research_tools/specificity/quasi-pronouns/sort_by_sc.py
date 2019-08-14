@@ -10,7 +10,7 @@ from collections import defaultdict
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <labels> <hierarchy>" % (sys.argv[0])
+        print("Usage: %s <labels> <hierarchy>" % (sys.argv[0]))
         sys.exit(1)
 
     sorted_words = []
@@ -32,10 +32,10 @@ if __name__ == "__main__":
             max_depth = int(tokens[3])
             sem2words[sem].append(word)
 
-    for key in sem2words.keys():
-        print key
+    for key in list(sem2words.keys()):
+        print(key)
         #sort the words in sem2words by their position in the other list.
         y = sorted(sem2words[key], key=lambda x : sorted_words.index(x))
         for word in y:
-            print "\t"+word
+            print("\t"+word)
 

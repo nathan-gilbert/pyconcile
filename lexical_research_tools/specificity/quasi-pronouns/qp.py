@@ -98,7 +98,7 @@ class QuasiPronoun:
         self.agent_verbs         = []
 
     def totalDocs(self):
-        return len(self.annotated_docs.keys()) + len(self.unannotated_docs.keys())
+        return len(list(self.annotated_docs.keys())) + len(list(self.unannotated_docs.keys()))
 
     def updateCount(self, annotated=True):
         if annotated:
@@ -133,15 +133,13 @@ class QuasiPronoun:
             #return float(len(list(set(map(lambda x : x.lower(), self.all_entities))))) / len(self.all_entities)
             #return float(len(list(set(map(lambda x : x.lower(),
             #    self.all_entities_heads))))) / len(self.all_entities_heads)
-            return float(len(list(set(map(lambda x : x.lower(),
-                self.all_entities_heads))))) / len(self.annotated_docs.keys())
+            return float(len(list(set([x.lower() for x in self.all_entities_heads])))) / len(list(self.annotated_docs.keys()))
         except:
             return 0.0
 
     def diversity(self):
         try:
-            return float(len(list(set(map(lambda x : x.lower(),
-                self.all_entities_heads))))) / len(self.all_entities_heads)
+            return float(len(list(set([x.lower() for x in self.all_entities_heads])))) / len(self.all_entities_heads)
         except:
             return 0.0
 
@@ -157,6 +155,6 @@ class QuasiPronoun:
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <first-argument>" % (sys.argv[0])
+        print("Usage: %s <first-argument>" % (sys.argv[0]))
         sys.exit(1)
 

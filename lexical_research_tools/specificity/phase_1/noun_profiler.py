@@ -55,21 +55,21 @@ class Nominal:
         self.sent_distances[ant_text].append(sd)
     def wd_distance_histogram(self):
         histo = {}
-        for key in self.word_distances.keys():
+        for key in list(self.word_distances.keys()):
             #key is a word
             for dist in self.word_distances[key]:
                 histo[str(dist)] = histo.get(str(dist), 0) + 1
         return histo
     def sent_distance_histogram(self):
         histo = {}
-        for key in self.sent_distances.keys():
+        for key in list(self.sent_distances.keys()):
             #key is a word
             for dist in self.sent_distances[key]:
                 histo[str(dist)] = histo.get(str(dist), 0) + 1
         return histo
 
 def add_stats(nominal_class, doc, anaphor, text):
-    if text in nominal_class.keys():
+    if text in list(nominal_class.keys()):
         nominal_class[text].updateCount()
     else:
         nominal_class[text] = Nominal(text)
@@ -148,7 +148,7 @@ def make_chart(histogram, dataset, chart_name, x_label, max_y=-1, max_x=-1):
     """
     if max_x < 0:
         largest_x = -1
-        l = max(map(lambda x : int(x), histogram.keys()))
+        l = max([int(x) for x in list(histogram.keys())])
         if l > largest_x:
             largest_x = l
     else:
@@ -168,20 +168,20 @@ def make_chart(histogram, dataset, chart_name, x_label, max_y=-1, max_x=-1):
     # Create a new subplot from a grid of 1x1
     plt = subplot(1,1,1)
 
-    X = range(0, largest_x)
+    X = list(range(0, largest_x))
     T = [histogram.get(str(x), 0) for x in X]
     plot(X, T, color="blue", marker="o", linewidth=1.0, linestyle=":", label="proper nouns")
 
     ## Set x limits
     xlim(0, largest_x)
     # Set x ticks
-    xticks(range(0, largest_x, 5))
+    xticks(list(range(0, largest_x, 5)))
 
     ## Set y limits
     ylim(0,largest_y)
 
     ## Set y ticks
-    yticks(range(0, largest_y, 50))
+    yticks(list(range(0, largest_y, 50)))
 
     #legend(loc='upper right')
     plt.set_xlabel("{0}".format(x_label))
@@ -196,25 +196,24 @@ def make_chart(histogram, dataset, chart_name, x_label, max_y=-1, max_x=-1):
 
 def make_pie_graph(dataset, stats):
     with open("piechart.stats", 'a') as outFile:
-        for key in stats.keys():
+        for key in list(stats.keys()):
             outFile.write("{0}$!${1}$!${2}\n".format(dataset, key, stats[key]))
 
 def make_bar_chart(dataset,stats):
     with open("barchart.stats", 'a') as outFile:
-        for key in stats.keys():
+        for key in list(stats.keys()):
             outFile.write("{0}$!${1}$!${2}\n".format(dataset, key, stats[key]))
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list> <dataset> -plot" % (sys.argv[0])
+        print("Usage: %s <file-list> <dataset> -plot" % (sys.argv[0]))
         sys.exit(1)
 
     DATASET = sys.argv[2]
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     sys.stdout.flush()
     sys.stdout.write("\r")
@@ -251,16 +250,16 @@ if __name__ == "__main__":
             add_stats(nominals, doc, np, text)
 
         #true singletons -- TODO: double check that these numbers are correct
-        for key in nominals.keys():
+        for key in list(nominals.keys()):
             nominals[key].singletons += doc.getSingletonCount(key)
 
     sys.stdout.write("\r \r\n")
 
     #histogram for sentence distance
     nominals_total_sent_histo = {}
-    for key in nominals.keys():
+    for key in list(nominals.keys()):
         h = nominals[key].sent_distance_histogram()
-        for dist in h.keys():
+        for dist in list(h.keys()):
             nominals_total_sent_histo[dist] = nominals_total_sent_histo.get(dist, 0) + h[dist]
 
     #combine histograms
@@ -269,9 +268,9 @@ if __name__ == "__main__":
 
     #histogram for word distance
     nominals_total_word_histo = {}
-    for key in nominals.keys():
+    for key in list(nominals.keys()):
         h = nominals[key].wd_distance_histogram()
-        for dist in h.keys():
+        for dist in list(h.keys()):
             nominals_total_word_histo[dist] = nominals_total_word_histo.get(dist, 0) + h[dist]
 
     #combine histograms
@@ -285,57 +284,57 @@ if __name__ == "__main__":
     # 1. base antecedents
     stats = {}
     nominals_ba = 0
-    for key in nominals.keys():
+    for key in list(nominals.keys()):
         nominals_ba += nominals[key].base_antecedent
     stats["T$!$BA"] = nominals_ba
 
     # 2. true singletons
     stats["T$!$SINGLE"] = 0
-    for key in nominals.keys():
+    for key in list(nominals.keys()):
         stats["T$!$SINGLE"] = stats["T$!$SINGLE"] + nominals[key].singletons
 
     # 3. strings matches
     stats["T$!$STR"] = 0
-    for key in nominals.keys():
+    for key in list(nominals.keys()):
         stats["T$!$STR"] = stats["T$!$STR"] + nominals[key].string_matches
 
     # 4. ratio of uniqueness
     stats["T$!$UNI"] = 0
-    for key in nominals.keys():
+    for key in list(nominals.keys()):
         stats["T$!$UNI"] = stats["T$!$UNI"] + nominals[key].unique
 
     # 5. avg word distance +mean +std
-    mean = numpy.mean(numpy.array(nominals_total_word_histo.values()))
-    std_dev = numpy.std(numpy.array(nominals_total_word_histo.values()))
+    mean = numpy.mean(numpy.array(list(nominals_total_word_histo.values())))
+    std_dev = numpy.std(numpy.array(list(nominals_total_word_histo.values())))
     stats["T$!$WORD_MEAN"] = mean
     stats["T$!$WORD_STD"] = std_dev
 
     #pie graphs? --right now they are bar graphs
     # 5. nominal/pronoun/proper pie graph
     stats["T$!$NOM"] = 0
-    for key in nominals.keys():
+    for key in list(nominals.keys()):
         stats["T$!$NOM"] = stats["T$!$NOM"] + nominals[key].nominal_antecedent
     stats["T$!$PRO"] = 0
-    for key in nominals.keys():
+    for key in list(nominals.keys()):
         stats["T$!$PRO"] = stats["T$!$PRO"] + nominals[key].string_matches
     stats["T$!$PRP"] = 0
-    for key in nominals.keys():
+    for key in list(nominals.keys()):
         stats["T$!$PRP"] = stats["T$!$PRP"] + nominals[key].proper_antecedent
 
     # 6. same arg/diff arg/no arg pie graph
     stats["T$!$SAME_ARG"] = 0
-    for key in nominals.keys():
+    for key in list(nominals.keys()):
         stats["T$!$SAME_ARG"] = stats["T$!$SAME_ARG"] + nominals[key].pdtb["SAME_ARG"]
     stats["T$!$DIFF_ARG"] = 0
-    for key in nominals.keys():
+    for key in list(nominals.keys()):
         stats["T$!$DIFF_ARG"] = stats["T$!$DIFF_ARG"] + nominals[key].pdtb["DIFF_ARG"]
 
     # 7. subj/obj ratio of antecedents
     stats["T$!$SUBJ"] = 0
-    for key in nominals.keys():
+    for key in list(nominals.keys()):
         stats["T$!$SUBJ"] = stats["T$!$SUBJ"] + nominals[key].subj
     stats["T$!$OBJ"] = 0
-    for key in nominals.keys():
+    for key in list(nominals.keys()):
         stats["T$!$OBJ"] = stats["T$!$OBJ"] + nominals[key].dobj
 
     make_bar_chart(DATASET, stats)

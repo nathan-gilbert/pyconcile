@@ -24,7 +24,7 @@ class Noun:
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <wordlist> <*.wn.labels> <*.sim> <*.gen>" % (sys.argv[0])
+        print("Usage: %s <wordlist> <*.wn.labels> <*.sim> <*.gen>" % (sys.argv[0]))
         sys.exit(1)
 
     DATASET="MUC4"
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     wordlist = []
     word2noun = {}
     with open(sys.argv[1], 'r') as wordList:
-        wordlist.extend(map(lambda x : x.strip(), wordList.readlines()))
+        wordlist.extend([x.strip() for x in wordList.readlines()])
 
     for word in wordlist:
         w = Noun()
@@ -94,7 +94,7 @@ if __name__ == "__main__":
                 word2noun[word].app = app
 
     semantic_class_rank = defaultdict(list)
-    for word in word2noun.keys():
+    for word in list(word2noun.keys()):
         if word2noun[word].sem is not None:
             semantic_class_rank[word2noun[word].sem].append(word)
 
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     final_qps = []
 
     #rank on criteria 1
-    for sem in semantic_class_rank.keys():
+    for sem in list(semantic_class_rank.keys()):
         s_list = sorted(semantic_class_rank[sem], key=lambda x : word2noun[x].count, reverse=True)
         s_list = sorted(s_list, key=lambda x : word2noun[x].chil, reverse=True)
         sorted_lists[sem] = s_list
@@ -123,7 +123,7 @@ if __name__ == "__main__":
                 i += 1
 
     #rank on criteria 2
-    for sem in semantic_class_rank.keys():
+    for sem in list(semantic_class_rank.keys()):
         s_list = sorted(semantic_class_rank[sem], key=lambda x : word2noun[x].count)
         s_list = sorted(s_list, key=lambda x : word2noun[x].depth)
         sorted_lists[sem] = s_list
@@ -141,7 +141,7 @@ if __name__ == "__main__":
                 i += 1
 
     #rank on criteria 3
-    for sem in semantic_class_rank.keys():
+    for sem in list(semantic_class_rank.keys()):
         s_list = sorted(semantic_class_rank[sem], key=lambda x : word2noun[x].count)
         s_list = sorted(s_list, key=lambda x : word2noun[x].wn1)
         sorted_lists[sem] = s_list
@@ -159,7 +159,7 @@ if __name__ == "__main__":
                 i += 1
 
     #rank on criteria 4
-    for sem in semantic_class_rank.keys():
+    for sem in list(semantic_class_rank.keys()):
         s_list = sorted(semantic_class_rank[sem], key=lambda x : word2noun[x].count)
         s_list = sorted(s_list, key=lambda x : word2noun[x].wn2)
         sorted_lists[sem] = s_list
@@ -177,7 +177,7 @@ if __name__ == "__main__":
                 i += 1
 
     #rank on criteria 5
-    for sem in semantic_class_rank.keys():
+    for sem in list(semantic_class_rank.keys()):
         s_list = sorted(semantic_class_rank[sem], key=lambda x : word2noun[x].count)
         s_list = sorted(s_list, key=lambda x : word2noun[x].amd, reverse=True)
         sorted_lists[sem] = s_list
@@ -195,7 +195,7 @@ if __name__ == "__main__":
                 i += 1
 
     #rank on criteria 6
-    for sem in semantic_class_rank.keys():
+    for sem in list(semantic_class_rank.keys()):
         s_list = sorted(semantic_class_rank[sem], key=lambda x : word2noun[x].count)
         s_list = sorted(s_list, key=lambda x : word2noun[x].hsa, reverse=True)
         sorted_lists[sem] = s_list
@@ -213,7 +213,7 @@ if __name__ == "__main__":
                 i += 1
 
     #rank on criteria 7
-    for sem in semantic_class_rank.keys():
+    for sem in list(semantic_class_rank.keys()):
         s_list = sorted(semantic_class_rank[sem], key=lambda x : word2noun[x].count)
         s_list = sorted(s_list, key=lambda x : word2noun[x].app, reverse=True)
         sorted_lists[sem] = s_list
@@ -231,7 +231,7 @@ if __name__ == "__main__":
                 i += 1
 
     #rank on all
-    for sem in semantic_class_rank.keys():
+    for sem in list(semantic_class_rank.keys()):
         s_list = sorted(semantic_class_rank[sem], key=lambda x : word2noun[x].count)
         s_list = sorted(s_list, key=lambda x : (float(sum(word_ranks[x])) / 7))
         sorted_lists[sem] = s_list
@@ -249,7 +249,7 @@ if __name__ == "__main__":
                 outFile.write(s)
 
     #rank on all
-    for sem in semantic_class_rank.keys():
+    for sem in list(semantic_class_rank.keys()):
         s_list = sorted(semantic_class_rank[sem], key=lambda x : word2noun[x].count)
         s_list = sorted(s_list, key=lambda x : min(word_ranks[x]))
         sorted_lists[sem] = s_list

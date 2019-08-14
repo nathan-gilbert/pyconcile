@@ -25,12 +25,12 @@ def hyponym_closure(synset):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist> <wordlist>" % (sys.argv[0])
+        print("Usage: %s <filelist> <wordlist>" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"), fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     ROOT = "/home/ngilbert/xspace/data/"
     docs = []
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     #sys.stderr.write(str(corpus.fileids())+"\n")
     unigrams = [token.lower() for token in corpus.words()]
     unigram_fd = nltk.FreqDist(unigrams)
-    bigrams = nltk.bigrams(map(string.lower, corpus.words()))
+    bigrams = nltk.bigrams(list(map(string.lower, corpus.words())))
     #sys.stderr.write(str(len(bigrams)))
     bigram_fd = nltk.FreqDist(bigrams)
     #print bigram_fd
@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     wordlist = []
     with open(sys.argv[2], 'r') as wordList:
-        wordlist.extend(map(lambda x : x.strip(), wordList.readlines()))
+        wordlist.extend([x.strip() for x in wordList.readlines()])
 
     #process the documents, find the documents where each of these words
     #appear.
@@ -72,7 +72,7 @@ if __name__ == "__main__":
         sys.stderr.flush()
         j+=1
         word = word.strip()
-        if word not in words2senses.keys():
+        if word not in list(words2senses.keys()):
             #print "="*70
             #print word
             synsets = wn.synsets(word, pos=wn.NOUN)
@@ -140,10 +140,10 @@ if __name__ == "__main__":
                     i+= 1
 
                 #if there were no matches, go with the first sense
-                if all(v == 0 for v in sense2count.values()):
+                if all(v == 0 for v in list(sense2count.values())):
                     words2senses[word].append(str(0)+"*")
                 else:
-                    sorted_s2c = sorted(sense2count.iteritems(), key=operator.itemgetter(1), reverse=True)
+                    sorted_s2c = sorted(iter(sense2count.items()), key=operator.itemgetter(1), reverse=True)
                     words2senses[word].append(str(sorted_s2c[0][0]))
 
                     #if the second sense is greater than 5, add it in as well.
@@ -156,4 +156,4 @@ if __name__ == "__main__":
 
     #output word -> sense lists (top 2)
     for word in words2senses:
-        print "{0:20}\t{1}".format(word, ", ".join(words2senses[word]))
+        print("{0:20}\t{1}".format(word, ", ".join(words2senses[word])))

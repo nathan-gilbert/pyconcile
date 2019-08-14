@@ -45,9 +45,9 @@ def read_in_concreteness():
 
 def getNounConcreteness(head):
     global CONCRETE_NOUNS
-    if len(CONCRETE_NOUNS.keys()) < 1:
+    if len(list(CONCRETE_NOUNS.keys())) < 1:
         read_in_concreteness()
-    if head in CONCRETE_NOUNS.keys():
+    if head in list(CONCRETE_NOUNS.keys()):
         return CONCRETE_NOUNS[head]
     return -1.0
 

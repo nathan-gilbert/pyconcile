@@ -10,13 +10,12 @@ import os
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print "Usage: %s <filelist> [-hobbs/-rap] <experiment>" % (sys.argv[0])
+        print("Usage: %s <filelist> [-hobbs/-rap] <experiment>" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     if sys.argv[2] == "-hobbs":
         FILE_TYPE = "hobbs"
@@ -26,7 +25,7 @@ if __name__ == "__main__":
     EXP = sys.argv[3]
     for f in files:
         f=f.strip()
-        print "Working on file: {0}".format(f)
+        print("Working on file: {0}".format(f))
         os.rename(f+"/annotations/"+FILE_TYPE,
                 f+"/annotations/"+FILE_TYPE+"_"+EXP)
         #os.rename(f+"/annotations/"+FILE_TYPE+"_"+EXP,

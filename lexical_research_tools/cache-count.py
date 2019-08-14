@@ -9,7 +9,7 @@ import sys
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <cache-file>" % (sys.argv[0])
+        print("Usage: %s <cache-file>" % (sys.argv[0]))
         sys.exit(1)
 
     counts = {}
@@ -19,5 +19,5 @@ if __name__ == "__main__":
             tokens = line.split("$!$")
             counts[tokens[1].strip()] = counts.get(tokens[1].strip(), 0) + 1
 
-    for key in counts.keys():
-        print "{0} : {1}".format(key, counts[key])
+    for key in list(counts.keys()):
+        print("{0} : {1}".format(key, counts[key]))

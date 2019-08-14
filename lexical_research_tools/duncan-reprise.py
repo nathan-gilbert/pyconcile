@@ -94,8 +94,8 @@ def reflexive_heuristic(doc):
                 #check for number/gender consistencies?
                 #make the resolution
                 if VERBOSE:
-                    print "Heuristic 1: %s <- %s" % (antecedent.pprint(),
-                            anaphor.pprint())
+                    print("Heuristic 1: %s <- %s" % (antecedent.pprint(),
+                            anaphor.pprint()))
                 doc.addDuncanPair(antecedent, anaphor, "1")
 
 def relative_heuristic(doc):
@@ -112,17 +112,16 @@ def relative_heuristic(doc):
 
             #look back for the subject of the closest verb.
             r_sent = reconcile.getAnnotSentence(doc.getPath(), np)
-            previous_marks = filter(lambda x : x.getStart() >=
-                    anaphor.getStart(),
-                    doc.getContainedMarkables(r_sent).getList())
+            previous_marks = [x for x in doc.getContainedMarkables(r_sent).getList() if x.getStart() >=
+                    anaphor.getStart()]
 
             #find the biggest NP preceding the relative, if there is only a
             #single NP then say they are coreferent
             if len(previous_marks):
                 antecedent = previous_marks[0]
                 if VERBOSE:
-                    print "Heuristic 2: %s <- %s" % (antecedent.pprint(),
-                            anaphor.pprint())
+                    print("Heuristic 2: %s <- %s" % (antecedent.pprint(),
+                            anaphor.pprint()))
                 doc.addDuncanPair(antecedent, anaphor, "2")
 
 def predicate_nominal_heuristic(doc, features):
@@ -162,8 +161,8 @@ def predicate_nominal_heuristic(doc, features):
                 continue
 
             if VERBOSE:
-                print "Heuristic 3: %s <- %s" % (antecedent.pprint(),
-                        anaphor.pprint())
+                print("Heuristic 3: %s <- %s" % (antecedent.pprint(),
+                        anaphor.pprint()))
             doc.addDuncanPair(antecedent, anaphor, "3")
 
     #copular_verbs = doc.getCopularVerbs()
@@ -196,8 +195,8 @@ def Xsaid_heuristic(doc):
 
             if antecedent is not None and anaphor is not None:
                 if VERBOSE:
-                    print "Heuristic 4: %s <- %s" % (antecedent.pprint(),
-                            anaphor.pprint())
+                    print("Heuristic 4: %s <- %s" % (antecedent.pprint(),
+                            anaphor.pprint()))
                 doc.addDuncanPair(antecedent, anaphor, "4")
 
 def locative_relative(doc):
@@ -227,8 +226,8 @@ def simple_appositive_heuristic(doc, features):
                 continue
 
             if VERBOSE:
-                print "Heuristic 6: %s <- %s" % (antecedent.pprint(),
-                        anaphor.pprint())
+                print("Heuristic 6: %s <- %s" % (antecedent.pprint(),
+                        anaphor.pprint()))
             doc.addDuncanPair(antecedent, anaphor, "6")
 
 def pos_appositive_heuristic(doc):
@@ -285,8 +284,8 @@ def pos_appositive_heuristic(doc):
                 antecedent = Annotation(np1_start, np1_end, 0, {}, np1_text)
                 anaphor = Annotation(np2_start, np2_end, 1, {}, np2_text)
                 if VERBOSE:
-                    print "Heuristic 6b: %s <- %s" % (antecedent.pprint(),
-                            anaphor.pprint())
+                    print("Heuristic 6b: %s <- %s" % (antecedent.pprint(),
+                            anaphor.pprint()))
                 doc.addDuncanPair(antecedent, anaphor, "6b")
 
 def prep_by_heuristic(doc):
@@ -308,8 +307,8 @@ def prep_by_heuristic(doc):
                 if anaphor.getText() in ("it"):
                     #make the resolution
                     if VERBOSE:
-                        print "Heuristic 7: %s <- %s" % (antecedent.pprint(),
-                                anaphor.pprint())
+                        print("Heuristic 7: %s <- %s" % (antecedent.pprint(),
+                                anaphor.pprint()))
                     doc.addDuncanPair(antecedent, anaphor, "7")
 
 def stringmatch_heuristic(doc):
@@ -326,8 +325,8 @@ def stringmatch_heuristic(doc):
 
             if string_match.soon_match(antecedent.getText(), anaphor.getText()):
                 if VERBOSE:
-                    print "Heuristic 8: %s <- %s" % (antecedent.pprint(),
-                            anaphor.pprint())
+                    print("Heuristic 8: %s <- %s" % (antecedent.pprint(),
+                            anaphor.pprint()))
                 doc.addDuncanPair(antecedent, anaphor, "8")
 
 def acronym_heuristic(doc):
@@ -348,8 +347,8 @@ def acronym_heuristic(doc):
                     or string_match.isAcronym(anaphor.getText(),
                             antecedent.getText()):
                 if VERBOSE:
-                    print "Heuristic 9a: %s <- %s" % (antecedent.pprint(),
-                            anaphor.pprint())
+                    print("Heuristic 9a: %s <- %s" % (antecedent.pprint(),
+                            anaphor.pprint()))
                 doc.addDuncanPair(antecedent, anaphor, "9")
 
 def acronym_heuristic2(doc):
@@ -403,8 +402,8 @@ def acronym_heuristic2(doc):
             #print "%s <- %s" % (doc.getPreceedingNoun(t).getText(), t.getText())
             #make the resolution?
             if VERBOSE:
-                print "Heuristic 9b: %s <- %s" % (antecedent.pprint(),
-                        anaphor.pprint())
+                print("Heuristic 9b: %s <- %s" % (antecedent.pprint(),
+                        anaphor.pprint()))
             doc.addDuncanPair(antecedent, anaphor, "9b")
 
 def acronym_heuristic3(doc, features):
@@ -420,8 +419,8 @@ def acronym_heuristic3(doc, features):
                 continue
 
             if VERBOSE:
-                print "Heuristic 9c: %s <- %s" % (antecedent.pprint(),
-                        anaphor.pprint())
+                print("Heuristic 9c: %s <- %s" % (antecedent.pprint(),
+                        anaphor.pprint()))
             doc.addDuncanPair(antecedent, anaphor, "9c")
 
 def firstsentence_heuristic(doc):
@@ -475,8 +474,8 @@ def firstsentence_semantic_heuristics(doc):
                     antecedent = Annotation(ne1.getStart(), ne1.getEnd()+1, 0, {}, np1)
                     anaphor = Annotation(ne2.getStart(), ne2.getEnd()+1, 1, {}, np2)
                     if VERBOSE:
-                        print "Heuristic 10: %s <- %s" % (antecedent.pprint(),
-                                anaphor.pprint())
+                        print("Heuristic 10: %s <- %s" % (antecedent.pprint(),
+                                anaphor.pprint()))
                     doc.addDuncanPair(antecedent, anaphor, "10")
 
 def pdtb_parser_results(doc):
@@ -540,7 +539,7 @@ def output(doc):
         else:
             #then we've already printed this pair
             continue
-        h = ','.join(map(lambda x : str(x), heurs[byte]))
+        h = ','.join([str(x) for x in heurs[byte]])
         outFile.write("%d\t%d,%d\tstring\tCOREF\tID=\"%d\"\t\n" % (i,
             antecedent.getStart(), antecedent.getEnd(), i))
         i += 1
@@ -578,10 +577,10 @@ if __name__ == "__main__":
                 continue
             f=f.strip()
             start_time = time.time()
-            print "Processing document: %s" % f
+            print("Processing document: %s" % f)
             d = Document(f)
             num_pairs = process_doc(d, options)
             end_time = time.time()
-            print "process time: %0.3f seconds :: %d pairs added" % ((end_time-start_time, num_pairs))
+            print("process time: %0.3f seconds :: %d pairs added" % ((end_time-start_time, num_pairs)))
         total_end_time = time.time()
-        print "Total process time: %0.3f seconds" % ((total_end_time-total_start_time))
+        print("Total process time: %0.3f seconds" % ((total_end_time-total_start_time)))

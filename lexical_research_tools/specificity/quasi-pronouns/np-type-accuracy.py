@@ -13,13 +13,12 @@ import qp_utils
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist>" % (sys.argv[0])
+        print("Usage: %s <filelist>" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     results = {
             "PROPER" : { "c" : 0, "i" : 0, "n" : 0},
@@ -97,7 +96,7 @@ if __name__ == "__main__":
         #cycle trough labeled pairs and see which ones do not have an
         #antecedent and also do not start a chain.
         no_antecedent_attempts = []
-        for key in gold_chains.keys():
+        for key in list(gold_chains.keys()):
             #skip the first mention because it's not supposed to have an
             #antecedent
             total_nps += len(gold_chains[key])
@@ -108,7 +107,7 @@ if __name__ == "__main__":
                     #a resolution
                     if pair[1] == mention:
                         if qp_utils.isNominal(pair[1], pos):
-                            print "{0}".format(pair[1].getText())
+                            print("{0}".format(pair[1].getText()))
                             uniq_common += 1
                         elif qp_utils.isProper(pair[1], pos):
                             uniq_proper += 1
@@ -197,8 +196,8 @@ if __name__ == "__main__":
                 else:
                     results["COMMON"]["i"] = results["COMMON"]["i"] + 1
 
-    print
-    print "TOTAL NPs: {0}".format(total_nps)
+    print()
+    print("TOTAL NPs: {0}".format(total_nps))
 
     try:
         c_p = float(results["PROPER"]["c"]) / total_proper
@@ -212,7 +211,7 @@ if __name__ == "__main__":
         n_p = float(results["PROPER"]["n"]) / uniq_proper
     except:
         n_p = 0.0
-    print "PROPER    {0:3.2f} {1:3.2f} {2:3.2f}".format(c_p, i_p, n_p)
+    print("PROPER    {0:3.2f} {1:3.2f} {2:3.2f}".format(c_p, i_p, n_p))
 
     try:
         c_n = float(results["COMMON"]["c"]) / total_common
@@ -226,7 +225,7 @@ if __name__ == "__main__":
         n_n = float(results["COMMON"]["n"]) / uniq_common
     except:
         n_n = 0.0
-    print "COMMON    {0:3.2f} {1:3.2f} {2:3.2f}".format(c_n, i_n, n_n)
+    print("COMMON    {0:3.2f} {1:3.2f} {2:3.2f}".format(c_n, i_n, n_n))
 
     try:
         c_pr = float(results["PRONOUN1"]["c"]) / total_pronoun1
@@ -240,7 +239,7 @@ if __name__ == "__main__":
         n_pr = float(results["PRONOUN1"]["n"]) / uniq_pronoun1
     except:
         n_pr = 0.0
-    print "PRONOUN1  {0:3.2f} {1:3.2f} {2:3.2f}".format(c_pr, i_pr, n_pr)
+    print("PRONOUN1  {0:3.2f} {1:3.2f} {2:3.2f}".format(c_pr, i_pr, n_pr))
 
     try:
         c_pr = float(results["PRONOUN3g"]["c"]) / total_pronoun3g
@@ -254,7 +253,7 @@ if __name__ == "__main__":
         n_pr = float(results["PRONOUN3g"]["n"]) / uniq_pronoun3g
     except:
         n_pr = 0.0
-    print "PRONOUN3g {0:3.2f} {1:3.2f} {2:3.2f}".format(c_pr, i_pr, n_pr)
+    print("PRONOUN3g {0:3.2f} {1:3.2f} {2:3.2f}".format(c_pr, i_pr, n_pr))
 
     try:
         c_pr = float(results["PRONOUN3n"]["c"]) / total_pronoun3n
@@ -268,7 +267,7 @@ if __name__ == "__main__":
         n_pr = float(results["PRONOUN3n"]["n"]) / uniq_pronoun3n
     except:
         n_pr = 0.0
-    print "PRONOUN3n {0:3.2f} {1:3.2f} {2:3.2f}".format(c_pr, i_pr, n_pr)
+    print("PRONOUN3n {0:3.2f} {1:3.2f} {2:3.2f}".format(c_pr, i_pr, n_pr))
 
     #for noun in nouns_not_found:
     #    print noun

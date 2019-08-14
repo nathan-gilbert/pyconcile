@@ -52,13 +52,13 @@ def getSortedList(l):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list>" % (sys.argv[0])
+        print("Usage: %s <file-list>" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(map(lambda x : x.strip(), filter(lambda x : not
-            x.startswith("#"), fileList.readlines())))
+        files.extend([x.strip() for x in [x for x in fileList.readlines() if not
+            x.startswith("#")]])
 
     docs_needed = round(float(len(files)) * 0.05)
 
@@ -86,7 +86,7 @@ if __name__ == "__main__":
                 np_words = np_text.split()
                 #print "{0:35} -> {1:15}".format(np_text, np_head)
 
-                if np_head not in head2nouns.keys():
+                if np_head not in list(head2nouns.keys()):
                     head2nouns[np_head] = Noun(np_head)
                     head2nouns[np_head].docs.append(f)
                 else:
@@ -167,12 +167,12 @@ if __name__ == "__main__":
                         head2nouns[np_head].verbing.append(np_words[head_index+1])
 
     sys.stderr.write("\r \r\n")
-    sorted_nouns = sorted(head2nouns.values(), key=operator.attrgetter('count'), reverse=True)
+    sorted_nouns = sorted(list(head2nouns.values()), key=operator.attrgetter('count'), reverse=True)
     for noun in sorted_nouns:
         if len(set(noun.docs)) < docs_needed:
             continue
 
-        print "{0:15} {1:>5} {2:>4} {3:>4} {4:>4} {5:>4} {6:>4} {7:>4} {8:>4} {9:>4}".format(
+        print("{0:15} {1:>5} {2:>4} {3:>4} {4:>4} {5:>4} {6:>4} {7:>4} {8:>4} {9:>4}".format(
                 "head",
                 "count",
                 "bd",
@@ -183,12 +183,12 @@ if __name__ == "__main__":
                 "oth",
                 "sub",
                 "obj"
-               )
-        print
+               ))
+        print()
 
         bare_definite = float(noun.bare_definite) / noun.count
         indefinite   = float(noun.indefinite) / noun.count
-        print "{0:15} {1:5} {2:0.2f} {3:0.2f} {4:0.2f} {5:0.2f} {6:0.2f} {7:0.2f} {8:0.2f} {9:0.2f}".format(
+        print("{0:15} {1:5} {2:0.2f} {3:0.2f} {4:0.2f} {5:0.2f} {6:0.2f} {7:0.2f} {8:0.2f} {9:0.2f}".format(
                 noun.head,
                 noun.count,
                 bare_definite,
@@ -199,67 +199,67 @@ if __name__ == "__main__":
                 float(len(noun.other_modifiers)) / noun.count,
                 float(noun.subject) / noun.count,
                 float(noun.dobj) / noun.count
-                )
+                ))
 
         adj_list = getSortedList(noun.adjective_modifiers)
-        print "{0:>15} {1}".format(
+        print("{0:>15} {1}".format(
                 "adjectives:",
                 adj_list
-                )
+                ))
         proper_list = getSortedList(noun.proper_modifiers)
-        print "{0:>15} {1}".format(
+        print("{0:>15} {1}".format(
                 "proper:",
                 proper_list
-                )
+                ))
         common_list = getSortedList(noun.common_modifiers)
-        print "{0:>15} {1}".format(
+        print("{0:>15} {1}".format(
                 "common:",
                 common_list
-                )
+                ))
         other_list = getSortedList(noun.other_modifiers)
-        print "{0:>15} {1}".format(
+        print("{0:>15} {1}".format(
                 "other:",
                 other_list
-                )
+                ))
         of_list = getSortedList(noun.of_attachments)
-        print "{0:>15} {1}".format(
+        print("{0:>15} {1}".format(
                 "of attachments:",
                 of_list
-                )
+                ))
         on_list = getSortedList(noun.on_attachments)
-        print "{0:>15} {1}".format(
+        print("{0:>15} {1}".format(
                 "on attachments:",
                 on_list
-                )
+                ))
         by_list = getSortedList(noun.by_attachments)
-        print "{0:>15} {1}".format(
+        print("{0:>15} {1}".format(
                 "by attachments:",
                 by_list
-                )
+                ))
         that_list = getSortedList(noun.that_attachments)
-        print "{0:>15} {1}".format(
+        print("{0:>15} {1}".format(
                 "that clause:",
                 that_list
-                )
+                ))
         which_list = getSortedList(noun.which_attachments)
-        print "{0:>15} {1}".format(
+        print("{0:>15} {1}".format(
                 "which clause:",
                 which_list
-                )
+                ))
         with_list = getSortedList(noun.with_attachments)
-        print "{0:>15} {1}".format(
+        print("{0:>15} {1}".format(
                 "with clause:",
                 with_list
-                )
+                ))
         verbed_list = getSortedList(noun.verbed)
-        print "{0:>15} {1}".format(
+        print("{0:>15} {1}".format(
                 "verbed:",
                 verbed_list
-                )
+                ))
         verbing_list = getSortedList(noun.verbing)
-        print "{0:>15} {1}".format(
+        print("{0:>15} {1}".format(
                 "verbing:",
                 verbing_list
-                )
-        print
+                ))
+        print()
 

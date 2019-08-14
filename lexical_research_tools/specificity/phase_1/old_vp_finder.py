@@ -112,7 +112,7 @@ def add_stats(text, anaphor, doc, nouns, head2text):
     #print "{0} => {1}".format(text, head)
 
     #then look for thangs
-    if text not in nouns.keys():
+    if text not in list(nouns.keys()):
         nouns[text] = Nominal(text)
         nouns[text].updateDocs(doc.getName())
     else:
@@ -154,7 +154,7 @@ def add_stats(text, anaphor, doc, nouns, head2text):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist> +tru" % (sys.argv[0])
+        print("Usage: %s <filelist> +tru" % (sys.argv[0]))
         sys.exit(1)
 
     TRUE_PRONOUNS = True if "+tru" in sys.argv else False
@@ -162,8 +162,7 @@ if __name__ == "__main__":
 
     files = []
     with open(sys.argv[1], 'r') as inFile:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            inFile.readlines()))
+        files.extend([x for x in inFile.readlines() if not x.startswith("#")])
 
     #TODO figure out the stats to match pronoun profiles
     SENT_DIST_3 = 0.75  #90% of antecedents are within 3 sentences
@@ -217,15 +216,15 @@ if __name__ == "__main__":
     #    print "{0:3} : {1}".format(nom.count, nom.text)
 
     head_counts = {}
-    for head in head2text.keys():
+    for head in list(head2text.keys()):
         total_count = 0
         for text in head2text[head]:
             total_count += nouns[text].count
         head_counts[head] = total_count
 
-    sorted_head_counts = sorted(head_counts.iteritems(), key=operator.itemgetter(1), reverse=True)
-    print "{0:17} {1:3} {2:3} {3:5} {4:5} {5:4} {6:4} {7:4} {8:4} {9:4} {10:4} {11:4} {12:4} {13:4} {14:4} {15:4}".format("head", "C","d", "MD","MMD", "D2", "Pr", "st", "ba", "As", "Ao", "ss", "so", "nm", "pr", "pn")
-    print
+    sorted_head_counts = sorted(iter(head_counts.items()), key=operator.itemgetter(1), reverse=True)
+    print("{0:17} {1:3} {2:3} {3:5} {4:5} {5:4} {6:4} {7:4} {8:4} {9:4} {10:4} {11:4} {12:4} {13:4} {14:4} {15:4}".format("head", "C","d", "MD","MMD", "D2", "Pr", "st", "ba", "As", "Ao", "ss", "so", "nm", "pr", "pn"))
+    print()
     for hc in sorted_head_counts:
         #stop if count less than 5
         if hc[1] < 5:
@@ -262,7 +261,7 @@ if __name__ == "__main__":
             total_prp_ante      += nouns[text].prp_ante
             total_pro_ante      += nouns[text].pro_ante
             total_nom_ante      += nouns[text].nom_ante
-            for key in nouns[text].docs.keys():
+            for key in list(nouns[text].docs.keys()):
                 total_docs[key] = total_docs.get(key, 0) + nouns[text].docs[key]
 
         if len(total_docs) < 3:
@@ -271,8 +270,8 @@ if __name__ == "__main__":
         total_one_sentence += total_zero_sentence
         total_two_sentence += total_one_sentence
 
-        mentions_per_doc        = float(head_counts[hc[0]]) / len(total_docs.keys())
-        median_mentions_per_doc = specificity_utils.median(total_docs.values())
+        mentions_per_doc        = float(head_counts[hc[0]]) / len(list(total_docs.keys()))
+        median_mentions_per_doc = specificity_utils.median(list(total_docs.values()))
 
         pro_count = 0
 
@@ -304,7 +303,7 @@ if __name__ == "__main__":
             label = "*={0}".format(pro_count)
 
 
-        print "{0:15} {1:3} {2:3} {3:5.2f} {4:5.2f} {5:.2f} {6:.2f} {7:.2f} {8:.2f} {9:.2f} {10:.2f} {11:.2f} {12:.2f} {13:.2f} {14:.2f} {15:.2f} {16}".format(
+        print("{0:15} {1:3} {2:3} {3:5.2f} {4:5.2f} {5:.2f} {6:.2f} {7:.2f} {8:.2f} {9:.2f} {10:.2f} {11:.2f} {12:.2f} {13:.2f} {14:.2f} {15:.2f} {16}".format(
                 hc[0],
                 hc[1],
                 len(set(total_docs)),
@@ -332,6 +331,6 @@ if __name__ == "__main__":
                 float(total_prp_ante) / total_antecedents,
                 float(total_pro_ante) / total_antecedents,
                 label
-                )
+                ))
         #print
 

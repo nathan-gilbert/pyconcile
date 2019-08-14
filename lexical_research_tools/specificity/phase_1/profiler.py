@@ -58,7 +58,7 @@ class Noun:
         self.sent_distances[ant_text].append(sd)
     def wd_distance_histogram(self):
         histo = {}
-        for key in self.word_distances.keys():
+        for key in list(self.word_distances.keys()):
             #key is a word
             for dist in self.word_distances[key]:
                 histo[str(dist)] = histo.get(str(dist), 0) + 1
@@ -66,7 +66,7 @@ class Noun:
 
     def sent_distance_histogram(self):
         histo = {}
-        for key in self.sent_distances.keys():
+        for key in list(self.sent_distances.keys()):
             #the 'key' is an antecedent
             for dist in self.sent_distances[key]:
                 #the 'dist' is the distance we have witnessed this antecedent
@@ -89,7 +89,7 @@ class Noun:
         #return histo2
 
 def add_stats(noun_class, doc, anaphor, text):
-    if text in noun_class.keys():
+    if text in list(noun_class.keys()):
         noun_class[text].updateCount()
     else:
         noun_class[text] = Noun(text)
@@ -174,14 +174,13 @@ def add_stats(noun_class, doc, anaphor, text):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list> <dataset>" % (sys.argv[0])
+        print("Usage: %s <file-list> <dataset>" % (sys.argv[0]))
         sys.exit(1)
 
     DATASET = sys.argv[2]
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     noun_classes = {
             "it"                      : {},
@@ -244,7 +243,7 @@ if __name__ == "__main__":
         #true singletons -- TODO double check that these numbers are correct
         #this word exists outside of annotations
         #This needs to take place at the document level and cycle over all the
-        for cls in noun_classes.keys():
+        for cls in list(noun_classes.keys()):
             for word in noun_classes[cls]:
                 noun_classes[cls][word].singletons += doc.getSingletonCount(word)
 
@@ -282,39 +281,39 @@ if __name__ == "__main__":
             total_starts_chain += noun_classes[cls][word].base_antecedent
 
             word_dist = noun_classes[cls][word].sent_distance_histogram()
-            for d in word_dist.keys():
+            for d in list(word_dist.keys()):
                 sent_dist[d] = sent_dist.get(d, 0) + word_dist[d]
 
-        print "-"*72
-        print "Class: {0}".format(cls)
-        print "Words                        : {0}".format(len(noun_classes[cls]))
-        print "Total Antecedents            : {0}".format(total_antecendents)
-        print "Productivity of Class        : {0:2.2f}".format(float(total_productivity)/total_antecendents)
-        print "Inverse Productivity of Class: {0:2.2f}".format(float(total_antecendents)/total_productivity)
-        print "Starts Chain                 : {0:2.2f}".format(float(total_starts_chain)/total_counts)
-        print "."*72
-        print "Nominal %: {0:.2%}".format(float(total_nominal_antecedents) / total_antecendents)
-        print "Proper  %: {0:.2%}".format(float(total_proper_antecedents) / total_antecendents)
-        print "Pronoun %: {0:.2%}".format(float(total_pronoun_antecedents) / total_antecendents)
-        print "."*72
-        print "Antecedent is Subject %: {0:4.2f}".format(float(total_subject_antecedents) / total_antecendents)
-        print "Antecedent is Object  %: {0:4.2f}".format(float(total_object_antecedents) / total_antecendents)
-        print "Self is Subject       %: {0:4.2f}".format(float(total_self_subject) / total_counts)
-        print "Self is Object        %: {0:4.2f}".format(float(total_self_object) / total_counts)
-        print "."*72
-        print "String matches %: {0:.2%}".format(float(total_string_match) / total_antecendents)
-        print "."*72
+        print("-"*72)
+        print("Class: {0}".format(cls))
+        print("Words                        : {0}".format(len(noun_classes[cls])))
+        print("Total Antecedents            : {0}".format(total_antecendents))
+        print("Productivity of Class        : {0:2.2f}".format(float(total_productivity)/total_antecendents))
+        print("Inverse Productivity of Class: {0:2.2f}".format(float(total_antecendents)/total_productivity))
+        print("Starts Chain                 : {0:2.2f}".format(float(total_starts_chain)/total_counts))
+        print("."*72)
+        print("Nominal %: {0:.2%}".format(float(total_nominal_antecedents) / total_antecendents))
+        print("Proper  %: {0:.2%}".format(float(total_proper_antecedents) / total_antecendents))
+        print("Pronoun %: {0:.2%}".format(float(total_pronoun_antecedents) / total_antecendents))
+        print("."*72)
+        print("Antecedent is Subject %: {0:4.2f}".format(float(total_subject_antecedents) / total_antecendents))
+        print("Antecedent is Object  %: {0:4.2f}".format(float(total_object_antecedents) / total_antecendents))
+        print("Self is Subject       %: {0:4.2f}".format(float(total_self_subject) / total_counts))
+        print("Self is Object        %: {0:4.2f}".format(float(total_self_object) / total_counts))
+        print("."*72)
+        print("String matches %: {0:.2%}".format(float(total_string_match) / total_antecendents))
+        print("."*72)
         zero_sentence = sent_dist.get("0", 0)
-        print "Antecedents within 0 sent: {0:5.2f}".format(float(zero_sentence) / total_antecendents)
+        print("Antecedents within 0 sent: {0:5.2f}".format(float(zero_sentence) / total_antecendents))
         one_sentence = zero_sentence + sent_dist.get("1", 0)
-        print "Antecedents within 1 sent: {0:5.2f}".format(float(one_sentence) / total_antecendents)
+        print("Antecedents within 1 sent: {0:5.2f}".format(float(one_sentence) / total_antecendents))
         two_sentence = one_sentence + sent_dist.get("2", 0)
-        print "Antecedents within 2 sent: {0:5.2f}".format(float(two_sentence) / total_antecendents)
+        print("Antecedents within 2 sent: {0:5.2f}".format(float(two_sentence) / total_antecendents))
         three_sentence = two_sentence + sent_dist.get("3", 0)
-        print "Antecedents within 3 sent: {0:5.2f}".format(float(three_sentence) / total_antecendents)
+        print("Antecedents within 3 sent: {0:5.2f}".format(float(three_sentence) / total_antecendents))
         four_sentence = three_sentence + sent_dist.get("4", 0)
-        print "Antecedents within 4 sent: {0:5.2f}".format(float(four_sentence) / total_antecendents)
+        print("Antecedents within 4 sent: {0:5.2f}".format(float(four_sentence) / total_antecendents))
         five_sentence = four_sentence + sent_dist.get("5", 0)
-        print "Antecedents within 5 sent: {0:5.2f}".format(float(five_sentence) / total_antecendents)
-        print "-"*72
-        print
+        print("Antecedents within 5 sent: {0:5.2f}".format(float(five_sentence) / total_antecendents))
+        print("-"*72)
+        print()

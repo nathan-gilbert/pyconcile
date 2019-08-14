@@ -20,9 +20,8 @@ def print_entry(entry):
 
 def print_wordpairs(entry):
     CEs = entry.getAntecedentCounts()
-    CEs = filter(lambda x : x not in data.ALL_PRONOUNS and x not in data.REL_PRONOUNS,
-            CEs.keys())
-    CEs = filter(lambda x : x != entry.getText(), CEs)
+    CEs = [x for x in list(CEs.keys()) if x not in data.ALL_PRONOUNS and x not in data.REL_PRONOUNS]
+    CEs = [x for x in CEs if x != entry.getText()]
     final_CEs = []
     for ce in CEs:
         tokens = ce.split()
@@ -38,10 +37,10 @@ def print_wordpairs(entry):
 def print_sundancepairs(entry):
     semantic_classes = entry.getNonStringMatchLSCounts("SU")
     total_semantic_classes = {}
-    for cls in semantic_classes.keys():
+    for cls in list(semantic_classes.keys()):
        total_semantic_classes[cls] = total_semantic_classes.get(cls, 0) + semantic_classes[cls]
 
-    sorted_sem_classes = sorted(total_semantic_classes.iteritems(), key=operator.itemgetter(1), reverse=True)
+    sorted_sem_classes = sorted(iter(total_semantic_classes.items()), key=operator.itemgetter(1), reverse=True)
     final_str = ""
     for pair in sorted_sem_classes:
         if pair[0] in ("UNKNOWN", "ENTITY"):
@@ -51,11 +50,11 @@ def print_sundancepairs(entry):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <lkb>" % (sys.argv[0])
+        print("Usage: %s <lkb>" % (sys.argv[0]))
         sys.exit(1)
 
     lkb = lkb_lib.read_in_lkb(sys.argv[1])
-    sorted_entries = sorted(lkb.iteritems(), key=lambda x : x[1].getCount(), reverse=True)
+    sorted_entries = sorted(iter(lkb.items()), key=lambda x : x[1].getCount(), reverse=True)
     for tup in sorted_entries:
         #we're skipping pronouns so far.
         if tup[0] in data.ALL_PRONOUNS or tup[0] in data.REL_PRONOUNS:
@@ -70,7 +69,7 @@ if __name__ == "__main__":
                 #i.e. there are no none-string match or pronominal word pairs
                 continue
             else:
-                print print_string
-                print wp
+                print(print_string)
+                print(wp)
                 #print sp
 

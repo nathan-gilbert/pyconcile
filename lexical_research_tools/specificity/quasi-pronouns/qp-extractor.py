@@ -125,14 +125,13 @@ PROMED=False
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist> <qps>" % (sys.argv[0])
+        print("Usage: %s <filelist> <qps>" % (sys.argv[0]))
         sys.exit(1)
 
     COMMENT = "These are all potential faux pronouns: any non-singleton, common noun."
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     qps = []
     with open(sys.argv[2], 'r') as qpList:
@@ -238,4 +237,4 @@ if __name__ == "__main__":
                     annot.getEnd(), utils.textClean(annot.getText().lower())))
                 i+=1
     sys.stderr.write("\r \r\n")
-    print "{0} QPs written".format(total_qps_created)
+    print("{0} QPs written".format(total_qps_created))

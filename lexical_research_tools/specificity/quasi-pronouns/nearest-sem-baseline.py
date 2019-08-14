@@ -23,7 +23,7 @@ def prevNPs(anaphor, nps):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist>" % (sys.argv[0])
+        print("Usage: %s <filelist>" % (sys.argv[0]))
         sys.exit(1)
 
     PRONOUNS = ("he", "she", "it", "they", "them")
@@ -32,14 +32,13 @@ if __name__ == "__main__":
     predictions_dir = "predictions.Baseline.byte_dist"
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     for f in files:
         if f.startswith("#"):
             continue
         f=f.strip()
-        print "Working on {0}".format(f)
+        print("Working on {0}".format(f))
 
         nps = reconcile.getNPs(f)
         pronouns = AnnotationSet("pronouns")

@@ -33,29 +33,29 @@ class Noun:
 
     def greaterThan5(self):
         five = 0
-        for key in self.true_antecedent_distances.keys():
+        for key in list(self.true_antecedent_distances.keys()):
             if self.true_antecedent_distances[key] > 4:
                 five += 1
         return five
 
     def baseAntencedent(self):
         ba = 0
-        for key in self.true_antecedent_distances.keys():
+        for key in list(self.true_antecedent_distances.keys()):
             if self.true_antecedent_distances[key] < 0 :
                 ba += 1
         return ba
 
     def count(self):
-        return len(self.instances.keys())
+        return len(list(self.instances.keys()))
 
     def num_correct(self):
-        return len(filter(lambda x : x == True, self.labels.values()))
+        return len([x for x in list(self.labels.values()) if x == True])
 
 def closest_antecedent(gold_chains, mention):
     """returns the closest antecedent in the text. if base antecedent,
     returns None"""
     #find this mention in gold chains
-    for key in gold_chains.keys():
+    for key in list(gold_chains.keys()):
         prev = None
         for other in gold_chains[key]:
             if mention == other:
@@ -83,7 +83,7 @@ def getAnnotSemanticClass(nes, annot):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist>" % (sys.argv[0])
+        print("Usage: %s <filelist>" % (sys.argv[0]))
         sys.exit(1)
 
     FAUX_PRONOUNS = []
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     files = []
     tracked_nouns = {} #head -> Noun instance
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"), fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     overall_sc_errors = {}
     for f in files:
@@ -126,7 +126,7 @@ if __name__ == "__main__":
         for pair in faux_pronoun_pairs:
             ana_head = specificity_utils.getHead(pair[1].getText()).lower()
             if ana_head in FAUX_PRONOUNS:
-                if ana_head not in tracked_nouns.keys():
+                if ana_head not in list(tracked_nouns.keys()):
                     tracked_nouns[ana_head] = Noun(ana_head)
                 tracked_pairs.append(pair)
 
@@ -175,27 +175,26 @@ if __name__ == "__main__":
                     #incorrect resolution
                     overall_sc_errors[ana_sc] = overall_sc_errors.get(ana_sc,0) + 1
 
-    stn = sorted(tracked_nouns.values(), key=lambda x : x.count(), reverse=True)
+    stn = sorted(list(tracked_nouns.values()), key=lambda x : x.count(), reverse=True)
     for tn in stn:
-        print "Head: {0}".format(tn.head)
-        print "\tresolutions: {0} / {1} = {2:.2f}".format(tn.num_correct(), tn.count(),
-                float(tn.num_correct()) / tn.count())
-        print "\t>5 antecedents: {0}".format(tn.greaterThan5())
-        print "\tno antecedents: {0}".format(tn.baseAntencedent())
-        print "\tincorrect sem: {0}".format(len(tn.incorrect_ante_sc.keys()))
+        print("Head: {0}".format(tn.head))
+        print("\tresolutions: {0} / {1} = {2:.2f}".format(tn.num_correct(), tn.count(),
+                float(tn.num_correct()) / tn.count()))
+        print("\t>5 antecedents: {0}".format(tn.greaterThan5()))
+        print("\tno antecedents: {0}".format(tn.baseAntencedent()))
+        print("\tincorrect sem: {0}".format(len(list(tn.incorrect_ante_sc.keys()))))
 
         incorrect = []
-        for ant in tn.antecedents.keys():
+        for ant in list(tn.antecedents.keys()):
             if not tn.labels[ant]:
                 incorrect.append(tn.antecedents[ant])
         most_common_incorrect = collections.Counter(incorrect).most_common(5)
 
-        print "\ttop 5 incorrect: {0}".format(", ".join(map(lambda x : x[0],
-            most_common_incorrect)))
-        print "="*72
+        print("\ttop 5 incorrect: {0}".format(", ".join([x[0] for x in most_common_incorrect])))
+        print("="*72)
 
     total_sc_errors = sum(overall_sc_errors.values())
-    for key in overall_sc_errors.keys():
-        print "{0:15} : {1:3} : {2:.2f}".format(key, overall_sc_errors[key],
-                float(overall_sc_errors[key]) / total_sc_errors)
+    for key in list(overall_sc_errors.keys()):
+        print("{0:15} : {1:3} : {2:.2f}".format(key, overall_sc_errors[key],
+                float(overall_sc_errors[key]) / total_sc_errors))
 

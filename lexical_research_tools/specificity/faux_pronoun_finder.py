@@ -58,22 +58,21 @@ def concreteness(w):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list> [-ACE]" % (sys.argv[0])
+        print("Usage: %s <file-list> [-ACE]" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     if "-ACE" in sys.argv:
         ACE = True
 
     for f in files:
         f=f.strip()
-        print "Working on file: {0}".format(f)
+        print("Working on file: {0}".format(f))
 
         nominals = getCommonNouns(f)
         for cn in nominals:
-            print cn.pprint()
+            print(cn.pprint())
 

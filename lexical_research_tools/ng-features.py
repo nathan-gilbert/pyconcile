@@ -12,7 +12,7 @@ from pyconcile import utils
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <pairs-file>" % (sys.argv[0])
+        print("Usage: %s <pairs-file>" % (sys.argv[0]))
         sys.exit(1)
 
     pairs = []
@@ -24,7 +24,7 @@ if __name__ == "__main__":
                 pairs.append(line)
             total_pairs += 1
 
-    print "Uniq pairs: {0}".format(len(pairs))
+    print("Uniq pairs: {0}".format(len(pairs)))
 
     feature_template = \
     "/uusoc/scratch/sollasollew/ngilbert/workspace/reconcile/src/reconcile/featureVector/individualFeature/setFeatures/NgTemplate.java"
@@ -61,4 +61,4 @@ if __name__ == "__main__":
     config_line = ""
     for i in range(0, feat_count):
         config_line += "FEATURE_NAMES=setFeatures.NgFeature" + str(i) + "\n"
-    print config_line
+    print(config_line)

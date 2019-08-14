@@ -41,12 +41,12 @@ if __name__ == "__main__":
             continue
         f = f.strip()
         final_pairs = {}
-        print "Working on : {0}".format(f)
+        print("Working on : {0}".format(f))
 
         #read in the features
         features = feature_utils.getFeatures(f, options.fdir)
-        for key in features.keys():
-            if "WordPairBinary" in features[key].keys():
+        for key in list(features.keys()):
+            if "WordPairBinary" in list(features[key].keys()):
                 #these are the pairs that need to be set as coref
                 #print feat
                 final_pairs[key] = 1.0
@@ -61,7 +61,7 @@ if __name__ == "__main__":
         except OSError:
             pass
         with open(f + outFile + "/predictions", 'w') as predictFile:
-            for key in final_pairs.keys():
+            for key in list(final_pairs.keys()):
                 predictFile.write("%d,%s %0.2f\n" % (docNo, key, final_pairs[key]))
         docNo += 1
 

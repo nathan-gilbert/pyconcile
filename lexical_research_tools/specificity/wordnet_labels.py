@@ -163,12 +163,12 @@ def stanford_semantic_type(head_span, stanford_nes):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist>" % (sys.argv[0])
+        print("Usage: %s <filelist>" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"), fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     master_unknown_labels = 0
     master_unknown_sc     = 0
@@ -179,7 +179,7 @@ if __name__ == "__main__":
 
     for f in files:
         f=f.strip()
-        print "Document: {0}".format(f)
+        print("Document: {0}".format(f))
 
         #NOTE: assumes that the nps file will only have gold_nps in it.
         nps = reconcile.getNPs(f)
@@ -227,7 +227,7 @@ if __name__ == "__main__":
                 noun_class[key] = "DATE/TIME"
 
             head_synset = None
-            if key not in labels.keys():
+            if key not in list(labels.keys()):
                 hypernyms = en.noun.hypernyms(head, sense=0)
                 synsets = wn.synsets(head)
                 if len(hypernyms) < 1:

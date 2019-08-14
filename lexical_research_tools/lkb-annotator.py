@@ -29,13 +29,13 @@ def readInCache():
 
 def writeOutCache(tags):
     with open("annotation.cache", 'w') as outFile:
-        for key in tags.keys():
+        for key in list(tags.keys()):
             outFile.write("{0}$!${1}\n".format(key,tags[key]))
 
 def getHead(text):
     global HEAD_CACHE
 
-    if text not in HEAD_CACHE.keys():
+    if text not in list(HEAD_CACHE.keys()):
         p1 = subprocess.Popen(["/usr/bin/java", "ReconcileStringFormat",
             "\"{0}\"".format(text)], stdout=subprocess.PIPE)
         head = p1.stdout.read().replace("\"","").strip()
@@ -46,7 +46,7 @@ def getHead(text):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <lkb-file>" % (sys.argv[0])
+        print("Usage: %s <lkb-file>" % (sys.argv[0]))
         sys.exit(1)
 
     previous_tags = readInCache()
@@ -60,17 +60,17 @@ if __name__ == "__main__":
     total_annotations = 0
 
     #Startup will take longer as all the heads will now be cached.
-    print "Finding total annotations...",
-    for key in lkb.keys():
-        for antecedent in lkb[key].getAntecedentCounts().keys():
+    print("Finding total annotations...", end=' ')
+    for key in list(lkb.keys()):
+        for antecedent in list(lkb[key].getAntecedentCounts().keys()):
             antecedent = getHead(antecedent.strip())
             if key == antecedent:
                 continue
             total_annotations += 1
-    print "Finished."
+    print("Finished.")
 
-    for key in lkb.keys():
-        for antecedent in lkb[key].getAntecedentCounts().keys():
+    for key in list(lkb.keys()):
+        for antecedent in list(lkb[key].getAntecedentCounts().keys()):
             key = getHead(key.strip())
             antecedent = getHead(antecedent.strip())
             if key == antecedent:
@@ -79,17 +79,17 @@ if __name__ == "__main__":
             pair = "{0}:{1}".format(key, antecedent)
             pair2 = "{0}:{1}".format(antecedent, key)
             annotated += 1
-            if (pair in tagged_resolutions.keys()) or (pair2 in tagged_resolutions.keys()):
+            if (pair in list(tagged_resolutions.keys())) or (pair2 in list(tagged_resolutions.keys())):
                 continue
             elif key in data.ALL_PRONOUNS or antecedent in data.ALL_PRONOUNS:
                 category = "PRO"
                 tagged_resolutions[pair] = category
             else:
                 os.system("clear")
-                print "Remaining annotations: {0}/{1}".format(annotated,total_annotations)
-                print "{0} <= {1}".format(key, antecedent)
+                print("Remaining annotations: {0}/{1}".format(annotated,total_annotations))
+                print("{0} <= {1}".format(key, antecedent))
                 while True:
-                    answer = raw_input("Which category? [j=identity, a=synonym, k=hyper, f=pronoun, d=denomination, m=meronymy, o=misc:h ")
+                    answer = input("Which category? [j=identity, a=synonym, k=hyper, f=pronoun, d=denomination, m=meronymy, o=misc:h ")
                     if answer == "j":
                         category = "IDENT"
                         tagged_resolutions[pair] = category

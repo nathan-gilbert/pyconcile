@@ -47,7 +47,7 @@ def getAnaphorType(anaphor):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list> [-hobbs|-rap|-rec|-sieve|-baseline]" % (sys.argv[0])
+        print("Usage: %s <file-list> [-hobbs|-rap|-rec|-sieve|-baseline]" % (sys.argv[0]))
         sys.exit(1)
 
     pronoun_types = {
@@ -58,7 +58,7 @@ if __name__ == "__main__":
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"), fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     total_scores = { "third_person_correct" : 0,
                      "third_person_guessed" : 0,
@@ -69,7 +69,7 @@ if __name__ == "__main__":
                      }
     for f in files:
         f=f.strip()
-        print "Working on file: {0}".format(f)
+        print("Working on file: {0}".format(f))
         gold_chains = reconcile.getGoldChains(f)
 
         if "-rap" in sys.argv:
@@ -85,7 +85,7 @@ if __name__ == "__main__":
             response_pairs = reconcile.getMentionDistancePronounPairs(f,
                     "features.goldnps/predictions.Baseline.byte_dist")
         else:
-            print "Select response type."
+            print("Select response type.")
             sys.exit(1)
 
         labeled_annots = reconcile.labelCorrectPairs(gold_chains, response_pairs)
@@ -95,44 +95,44 @@ if __name__ == "__main__":
             if anaphor_type == "unk": continue
             total_scores[anaphor_type+"_guessed"] += 1
             if pair[2]:
-                print pair[0].ppprint() + " <- " + pair[1].ppprint()
+                print(pair[0].ppprint() + " <- " + pair[1].ppprint())
                 total_scores[anaphor_type+"_correct"] += 1
             else:
-                print pair[0].ppprint() + " <- " + pair[1].ppprint() + "*"
+                print(pair[0].ppprint() + " <- " + pair[1].ppprint() + "*")
 
 
-    print "="*72
+    print("="*72)
     try:
         result = total_scores["third_person_correct"] / float(total_scores["third_person_guessed"])
     except:
         result = 0
-    print "Third Person stats: {0} / {1} = {2:0.2f}".format(
+    print("Third Person stats: {0} / {1} = {2:0.2f}".format(
             total_scores["third_person_correct"],
             total_scores["third_person_guessed"],
-            result)
+            result))
     try:
         result = total_scores["it_correct"] / float(total_scores["it_guessed"])
     except:
         result = 0
-    print "IT stats: {0} / {1} = {2:0.2f}".format(
+    print("IT stats: {0} / {1} = {2:0.2f}".format(
             total_scores["it_correct"],
             total_scores["it_guessed"],
-            result)
+            result))
     try:
         result = total_scores["plural_correct"] / float(total_scores["plural_guessed"])
     except:
         result = 0
-    print "Plural stats: {0} / {1} = {2:0.2f}".format(
+    print("Plural stats: {0} / {1} = {2:0.2f}".format(
             total_scores["plural_correct"],
             total_scores["plural_guessed"],
-            result)
+            result))
     try:
         numerator = total_scores["plural_correct"] + total_scores["it_correct"] + total_scores["third_person_correct"]
         denom = total_scores["plural_guessed"] + total_scores["it_guessed"] + total_scores["third_person_guessed"]
         result = numerator / float(denom)
     except:
         result = 0
-    print "Total: {0} / {1} = {2:0.2f}".format(
+    print("Total: {0} / {1} = {2:0.2f}".format(
             numerator,
             denom,
-            result)
+            result))

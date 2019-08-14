@@ -11,7 +11,7 @@ from collections import defaultdict
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <piechart.stats>" % (sys.argv[0])
+        print("Usage: %s <piechart.stats>" % (sys.argv[0]))
         sys.exit(1)
 
     stat2value = {}

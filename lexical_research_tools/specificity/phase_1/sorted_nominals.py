@@ -80,7 +80,7 @@ def add_stats(text, anaphor, doc, nouns, head2text):
     #print "{0} => {1}".format(text, head)
 
     #then look for thangs
-    if text not in nouns.keys():
+    if text not in list(nouns.keys()):
         nouns[text] = VirtualPronoun(text)
         nouns[text].updateDocs(doc.getName())
     else:
@@ -190,7 +190,7 @@ def add_stats(text, anaphor, doc, nouns, head2text):
 
     #find which chain the anaphor is from and add the chain statistics
     anaphor_chain = None
-    for chain in doc.gold_chains.keys():
+    for chain in list(doc.gold_chains.keys()):
         for mention in doc.gold_chains[chain]:
             if anaphor == mention:
                 anaphor_chain = chain
@@ -221,7 +221,7 @@ def add_stats(text, anaphor, doc, nouns, head2text):
         chain_coverage = float(covered_sentences) / len(doc.sentences)
         nouns[text].chain_coverage[doc.getName()] = chain_coverage
 
-        for chain in doc.gold_chains.keys():
+        for chain in list(doc.gold_chains.keys()):
             if chain == anaphor_chain:
                 continue
             if len(doc.gold_chains[chain]) > chain_length:
@@ -242,7 +242,7 @@ def add_stats(text, anaphor, doc, nouns, head2text):
             if specificity_utils.isProper(mention_np):
                 common_only = False
 
-        if chain_name not in nouns[text].nom_chain_only.keys():
+        if chain_name not in list(nouns[text].nom_chain_only.keys()):
             nouns[text].nom_chain_only[chain_name] = common_only
     else:
         sys.stderr.write("Anaphor chain not found?\n")
@@ -276,7 +276,7 @@ def add_stats(text, anaphor, doc, nouns, head2text):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist> +tru" % (sys.argv[0])
+        print("Usage: %s <filelist> +tru" % (sys.argv[0]))
         sys.exit(1)
 
     TRUE_PRONOUNS = True if "+tru" in sys.argv else False
@@ -284,8 +284,7 @@ if __name__ == "__main__":
 
     files = []
     with open(sys.argv[1], 'r') as inFile:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            inFile.readlines()))
+        files.extend([x for x in inFile.readlines() if not x.startswith("#")])
 
     #TODO figure out the stats to match pronoun profiles
     SENT_DIST_3  = 0.50  #70% of antecedents are within 3 sentences
@@ -340,15 +339,15 @@ if __name__ == "__main__":
     sys.stderr.write("\r \r\n")
 
     head_counts = {}
-    for head in head2text.keys():
+    for head in list(head2text.keys()):
         total_count = 0
         for text in head2text[head]:
             total_count += nouns[text].count
         head_counts[head] = total_count
 
-    sorted_head_counts = sorted(head_counts.iteritems(), key=operator.itemgetter(1), reverse=True)
+    sorted_head_counts = sorted(iter(head_counts.items()), key=operator.itemgetter(1), reverse=True)
     for sh in sorted_head_counts:
-        print "head: {0} : {1}".format(sh[0], sh[1])
+        print("head: {0} : {1}".format(sh[0], sh[1]))
         for text in head2text[sh[0]]:
-            print text
-        print
+            print(text)
+        print()

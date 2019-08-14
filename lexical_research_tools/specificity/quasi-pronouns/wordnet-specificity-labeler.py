@@ -77,14 +77,14 @@ def wordnet_specificity(head_synset):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <wordlist> <senses_list> <hierachy>" % (sys.argv[0])
+        print("Usage: %s <wordlist> <senses_list> <hierachy>" % (sys.argv[0]))
         sys.exit(1)
 
     head_dict = {}
 
     wordlist = []
     with open(sys.argv[1], 'r') as wordList:
-        wordlist.extend(map(lambda x : x.strip(), wordList.readlines()))
+        wordlist.extend([x.strip() for x in wordList.readlines()])
 
     senselist = defaultdict(list)
     with open(sys.argv[2], 'r') as wnSenseList:
@@ -187,8 +187,8 @@ if __name__ == "__main__":
 
             total_children = head_dict[word].instance_count + head_dict[word].hyponym_count
             if total_children > sem2mostchild.get(word2sem.get(word, 'PHY'), 0):
-                if word not in word2sem.keys():
-                    print "#Semantics not found for {0}".format(word)
+                if word not in list(word2sem.keys()):
+                    print("#Semantics not found for {0}".format(word))
                 sem2mostchild[word2sem.get(word, 'PHY')] = total_children
 
             head_dict[word].avg_min_depth = float(min_depth_sum) / len(synsets)
@@ -201,12 +201,12 @@ if __name__ == "__main__":
     #sorted_keys = sorted(head_dict.keys())
     #sorted_values = sorted(head_dict.values(), key=lambda x : x.hyponym_count,
     #        reverse=True)
-    sorted_values = sorted(head_dict.values(), key=lambda x : x.criteria(),
+    sorted_values = sorted(list(head_dict.values()), key=lambda x : x.criteria(),
             reverse=True)
     #for head in sorted_keys:
-    print "{0:>6} {1:>6} {2}".format(
+    print("{0:>6} {1:>6} {2}".format(
             "chil", "hier", "head"
-            )
+            ))
     for noun in sorted_values:
         if noun.senses < 0:
             continue
@@ -220,8 +220,8 @@ if __name__ == "__main__":
         else:
             child_perc = 1.0
 
-        print "{0:>6.2f} {1:>6.2f} {2}".format(
+        print("{0:>6.2f} {1:>6.2f} {2}".format(
                 child_perc,           #0
                 noun.h_depth_perc,    #1
                 noun.head             #2
-                )
+                ))

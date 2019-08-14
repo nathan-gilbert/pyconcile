@@ -38,7 +38,7 @@ class NP:
 #NOTE: right now, only focusing on gold mentions
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist>" % (sys.argv[0])
+        print("Usage: %s <filelist>" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
@@ -78,17 +78,17 @@ if __name__ == "__main__":
             if ident.endswith("ag"): continue
             if ident.endswith("plc"): continue
 
-            if ident in nps.keys():
+            if ident in list(nps.keys()):
                 nps[ident].incrementCount()
             else:
                 new_np = NP(ident)
                 nps[ident] = new_np
 
     #now sort them
-    sorted_nps = sorted(nps.iteritems(), key=lambda x : x[1].getCount(), reverse=True)
+    sorted_nps = sorted(iter(nps.items()), key=lambda x : x[1].getCount(), reverse=True)
 
     for np in sorted_nps:
         #np[0] -> string key
         #np[1] -> NP class instance
-        print "{0:3} : {1}".format(np[1].getCount(), np[0])
+        print("{0:3} : {1}".format(np[1].getCount(), np[0]))
         #print "{0}".format(np[0])

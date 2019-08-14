@@ -19,16 +19,16 @@ def getHead(text):
     return p1.stdout.read().replace("\"","").strip()
 
 def check(pair, lkb, cache):
-    if pair[0] in lkb.keys():
-        if pair[1] not in cache.keys():
+    if pair[0] in list(lkb.keys()):
+        if pair[1] not in list(cache.keys()):
             anaphor_head = getHead(pair[1])
             cache[pair[1]] = anaphor_head
         else:
             anaphor_head = cache[pair[1]]
 
         antecedents = lkb[pair[0]].getAntecedentCounts()
-        for antecedent in antecedents.keys():
-            if antecedent not in cache.keys():
+        for antecedent in list(antecedents.keys()):
+            if antecedent not in list(cache.keys()):
                 antecedent_head = getHead(antecedent)
                 cache[antecedent] = antecedent_head
             else:
@@ -40,15 +40,15 @@ def check(pair, lkb, cache):
                 else:
                     return "INCORRECT"
 
-    if pair[1] in lkb.keys():
-        if pair[0] not in cache.keys():
+    if pair[1] in list(lkb.keys()):
+        if pair[0] not in list(cache.keys()):
             anaphor_head = getHead(pair[0])
             cache[pair[0]] = anaphor_head
         else:
             anaphor_head = cache[pair[0]]
         antecedents = lkb[pair[1]].getAntecedentCounts()
         for antecedent in antecedents:
-            if antecedent not in cache.keys():
+            if antecedent not in list(cache.keys()):
                 antecedent_head = getHead(antecedent)
                 cache[antecedent] = antecedent_head
             else:
@@ -68,7 +68,7 @@ def check(pair, lkb, cache):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <duncan-lkb> <gold-lkb> <pair-file>" % (sys.argv[0])
+        print("Usage: %s <duncan-lkb> <gold-lkb> <pair-file>" % (sys.argv[0]))
         sys.exit(1)
 
     duncan_lkb = lkb_lib.read_in_lkb(sys.argv[1])
@@ -173,25 +173,25 @@ if __name__ == "__main__":
     sys.stdout.write("\r \r\n")
     sorted_keys = sorted(statistics.keys())
     for key in sorted_keys:
-        print "{0:25} : {1}".format(key, statistics[key])
+        print("{0:25} : {1}".format(key, statistics[key]))
 
-    sorted_keys = sorted(duncan_correct_pairs.iteritems(),
+    sorted_keys = sorted(iter(duncan_correct_pairs.items()),
             key=operator.itemgetter(1), reverse=True)
-    print "#"*15 + "CORRECT" + "#"*15
+    print("#"*15 + "CORRECT" + "#"*15)
     for key_value in sorted_keys:
-        print "{0:30} : {1}".format(key_value[0], key_value[1])
+        print("{0:30} : {1}".format(key_value[0], key_value[1]))
 
-    print "#"*15 + "INCORRECT" + "#"*15
-    sorted_keys = sorted(duncan_incorrect_pairs.iteritems(),
-            key=operator.itemgetter(1), reverse=True)
-    for key_value in sorted_keys:
-        print "{0:30} : {1}".format(key_value[0], key_value[1])
-
-    print "#"*15 + "MISSING" + "#"*15
-    sorted_keys = sorted(missing.iteritems(),
+    print("#"*15 + "INCORRECT" + "#"*15)
+    sorted_keys = sorted(iter(duncan_incorrect_pairs.items()),
             key=operator.itemgetter(1), reverse=True)
     for key_value in sorted_keys:
-        print "{0:30} : {1}".format(key_value[0], key_value[1])
+        print("{0:30} : {1}".format(key_value[0], key_value[1]))
+
+    print("#"*15 + "MISSING" + "#"*15)
+    sorted_keys = sorted(iter(missing.items()),
+            key=operator.itemgetter(1), reverse=True)
+    for key_value in sorted_keys:
+        print("{0:30} : {1}".format(key_value[0], key_value[1]))
 
     pickle.dump(cache, open("cache.p", "wb"))
 

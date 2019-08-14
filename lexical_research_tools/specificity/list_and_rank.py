@@ -36,13 +36,13 @@ class Noun:
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list> [-hobbs|-rap|-rec|-sieve|-baseline]" % (sys.argv[0])
+        print("Usage: %s <file-list> [-hobbs|-rap|-rec|-sieve|-baseline]" % (sys.argv[0]))
         sys.exit(1)
 
     COUNT = 2
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"), fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     total_scores = {"vps_guessed" : 0,
                     "vps_correct" : 0
@@ -100,7 +100,7 @@ if __name__ == "__main__":
             #skip real pronouns
             if ana_head not in data.ALL_PRONOUNS:
                 pairs.append(pair)
-                if ana_head not in heads2nouns.keys():
+                if ana_head not in list(heads2nouns.keys()):
                     heads2nouns[ana_head] = Noun(ana_head)
                 else:
                     heads2nouns[ana_head].updateCount()
@@ -121,19 +121,19 @@ if __name__ == "__main__":
 
     #sort the dict by percentage correct
     #do not consider nouns that occurred less than 3 times.
-    sorted_nouns = sorted(heads2nouns.values(), key=lambda x : x.count, reverse=True)
+    sorted_nouns = sorted(list(heads2nouns.values()), key=lambda x : x.count, reverse=True)
     sorted_nouns = sorted(sorted_nouns, key=lambda x : x.percent_correct(), reverse=True)
 
     for sn in sorted_nouns:
         if sn.count > COUNT:
-            print "{0:.2f} : {1:3} : {2:3} : {3:15}".format(sn.percent_correct(), sn.correct, sn.count, sn.head)
+            print("{0:.2f} : {1:3} : {2:3} : {3:15}".format(sn.percent_correct(), sn.correct, sn.count, sn.head))
 
-    print "="*72
+    print("="*72)
     try:
         result = total_scores["vps_correct" ] / float(total_scores["vps_guessed"])
-        print "Total: {0} / {1} = {2:0.2f}".format(total_scores["vps_correct"],
-                total_scores["vps_guessed"], result)
+        print("Total: {0} / {1} = {2:0.2f}".format(total_scores["vps_correct"],
+                total_scores["vps_guessed"], result))
     except:
         result = 0.0
-        print "Total: {0} / {1} = {2:0.2f}".format(total_scores["vps_correct"],
-                total_scores["vps_guessed"], result)
+        print("Total: {0} / {1} = {2:0.2f}".format(total_scores["vps_correct"],
+                total_scores["vps_guessed"], result))

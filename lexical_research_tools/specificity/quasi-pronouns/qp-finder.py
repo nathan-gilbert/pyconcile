@@ -186,7 +186,7 @@ def process(f, head2qp, annotated_file):
                     continue
 
             #bookkeeping
-            if head not in head2qp.keys():
+            if head not in list(head2qp.keys()):
                 head2qp[head] = QuasiPronoun(head)
                 head2qp[head].updateCount(True)
                 head2qp[head].updateDocs(f, True)
@@ -219,7 +219,7 @@ def process(f, head2qp, annotated_file):
                     continue
 
             #bookkeeping
-            if head not in head2qp.keys():
+            if head not in list(head2qp.keys()):
                 head2qp[head] = QuasiPronoun(head)
                 head2qp[head].updateDocs(f, False)
                 head2qp[head].updateCount(False)
@@ -252,7 +252,7 @@ def processACE(f, head2qp):
                 continue
 
         #bookkeeping
-        if head not in head2qp.keys():
+        if head not in list(head2qp.keys()):
             head2qp[head] = QuasiPronoun(head)
         else:
             head2qp[head].updateDocs(f)
@@ -271,7 +271,7 @@ def processACE(f, head2qp):
 def process_gold(f, np, head, text, head2qp, gold_chains):
     #find the chain of this np
     np_chain = None
-    for chain in gold_chains.keys():
+    for chain in list(gold_chains.keys()):
         for mention in gold_chains[chain]:
             if np == mention:
                 np_chain = gold_chains[chain]
@@ -323,7 +323,7 @@ def process_gold(f, np, head, text, head2qp, gold_chains):
     #TODO diversity of antecedents
 
     #chain coverage in document [% of document sentences chain touches]
-    covered_sentences = range(len(sentences))
+    covered_sentences = list(range(len(sentences)))
     i = 0
     for sent in sentences:
         for mention in np_chain:
@@ -373,14 +373,12 @@ if __name__ == "__main__":
     #read in the annotated files to process
     annotated_files = []
     with open(options.annotated_filelist, 'r') as fileList:
-        annotated_files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        annotated_files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     unannotated_files = []
     if options.unannotated_filelist is not None:
         with open(options.unannotated_filelist, 'r') as fileList:
-            unannotated_files.extend(filter(lambda x : not x.startswith("#"),
-                fileList.readlines()))
+            unannotated_files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     i=0
     files = annotated_files + unannotated_files
@@ -416,23 +414,23 @@ if __name__ == "__main__":
                     continue
                 tokens = line.split()
                 word = tokens[-1].strip()
-                if word not in head2qp.keys():
+                if word not in list(head2qp.keys()):
                     continue
                 children = float(tokens[3])
                 depth = float(tokens[6])
                 head2qp[word].h_depth = depth
                 head2qp[word].wn_children = children
 
-    sorted_qps = sorted(head2qp.values(), key=lambda x : x.totalCount(), reverse=True)
+    sorted_qps = sorted(list(head2qp.values()), key=lambda x : x.totalCount(), reverse=True)
     if not USE_GOLD:
-        print "{0:4} {1:3} {2:>4} {3:>4} {4:>4} {5}".format(
+        print("{0:4} {1:3} {2:>4} {3:>4} {4:>4} {5}".format(
                 "cou",  #0
                 "doc",  #1
                 "foc",  #2
                 "ind",  #3
                 "amd",  #4
                 "head"  #5
-                )
+                ))
 
         for n in sorted_qps:
             #has to have appeared more than 5 times and in at least 3 docs
@@ -445,17 +443,17 @@ if __name__ == "__main__":
                 if amd > 1.0:
                     amd = 1.0
 
-                print "{0:4} {1:3} {2:0.2f} {3:0.2f} {4:0.2f} {5}".format(
+                print("{0:4} {1:3} {2:0.2f} {3:0.2f} {4:0.2f} {5}".format(
                         n.totalCount(),                      #0
                         n.totalDocs(),                       #1
                         float(n.subj+n.dobj)/n.totalCount(), #2
                         float(n.ind_no_app)/n.totalCount(),  #3
                         amd,                                 #4
                         n.head                               #5
-                        )
+                        ))
 
     elif options.wn_labels is not None:
-        print "{0:>4} {1:>3} {2:>4} {3:>4} {4:>4} {5:>4} {6:>4} {7:>4} {8:>4} {9:>4} {10:>4} {11}".format(
+        print("{0:>4} {1:>3} {2:>4} {3:>4} {4:>4} {5:>4} {6:>4} {7:>4} {8:>4} {9:>4} {10:>4} {11}".format(
                 "cou",  #0
                 "doc",  #1
                 "foc",  #2
@@ -468,7 +466,7 @@ if __name__ == "__main__":
                 "chi",  #9 wordnet labels required
                 "qp?",  #10 label
                 "head"  #11
-                )
+                ))
 
         final_qps = []
         for n in sorted_qps:
@@ -517,7 +515,7 @@ if __name__ == "__main__":
                     pro_count += 1
 
                 try:
-                    chain_coverage = float(sum(n.chain_coverage.values())) / len(n.annotated_docs.keys())
+                    chain_coverage = float(sum(n.chain_coverage.values())) / len(list(n.annotated_docs.keys()))
                 except:
                     chain_coverage = 0.0
 
@@ -528,7 +526,7 @@ if __name__ == "__main__":
                     final_qps.append(n.head)
 
                 label = "{0}".format(pro_count)
-                print "{0:>4} {1:>3} {2:>4.2f} {3:>4.2f} {4:>4.2f} {5:>4.2f} {6:>4.2f} {7:>4.2f} {8:>4.2f} {9:>4.2f} {10:>4} {11}".format(
+                print("{0:>4} {1:>3} {2:>4.2f} {3:>4.2f} {4:>4.2f} {5:>4.2f} {6:>4.2f} {7:>4.2f} {8:>4.2f} {9:>4.2f} {10:>4} {11}".format(
                         n.totalCount(),                      #0
                         n.totalDocs(),                       #1
                         focus,                               #2
@@ -541,7 +539,7 @@ if __name__ == "__main__":
                         n.wn_children,                       #9
                         label,                               #10
                         n.head                               #11
-                        )
+                        ))
 
             with open("{0}.qps".format(options.dataset), 'w') as outFile:
                 st = datetime.datetime.fromtimestamp(time.time()).strftime('%m-%d-%Y %H:%M:%S')
@@ -549,7 +547,7 @@ if __name__ == "__main__":
                 for word in final_qps:
                     outFile.write("{0}\n".format(word))
     else:
-        print "{0:4} {1:3} {2:>4} {3:>4} {4:>4} {5:>4} {6:>4} {7:>4} {8:>4} {9}".format(
+        print("{0:4} {1:3} {2:>4} {3:>4} {4:>4} {5:>4} {6:>4} {7:>4} {8:>4} {9}".format(
                 "cou",  #0
                 "doc",  #1
                 "foc",  #2
@@ -560,20 +558,20 @@ if __name__ == "__main__":
                 "<3s",  #7 gold data required
                 "noa",  #8 gold data required
                 "head"  #9 gold data required
-                )
+                ))
 
         for n in sorted_qps:
             #has to have appeared more than 5 times and in at least 3 docs
             if n.totalCount() >= COUNT_CUTOFF and n.totalDocs() >= DOC_CUTOFF:
-                print "{0:4} {1:3} {2:0.2f} {3:0.2f} {4:0.2f} {5:0.2f} {6:0.2f} {7:0.2f} {8:0.2f} {9}".format(
+                print("{0:4} {1:3} {2:0.2f} {3:0.2f} {4:0.2f} {5:0.2f} {6:0.2f} {7:0.2f} {8:0.2f} {9}".format(
                         n.totalCount(),                                                    #0
                         n.totalDocs(),                                                     #1
                         float(n.subj+n.dobj)/n.totalCount(),                               #2
                         float(n.one_premod)/n.totalCount(),                                #3
                         float(n.prep_mod+n.rc_mod)/n.totalCount(),                         #4
                         float(n.bdef_starts_chain)/n.totalCount(),                         #5
-                        float(sum(n.chain_coverage.values()))/len(n.annotated_docs.keys()),#6
+                        float(sum(n.chain_coverage.values()))/len(list(n.annotated_docs.keys())),#6
                         n.less_than_three(),                                               #7
                         float(n.singleton+n.starts_chain) / n.totalCount(),                #8
                         n.head                                                             #9
-                        )
+                        ))

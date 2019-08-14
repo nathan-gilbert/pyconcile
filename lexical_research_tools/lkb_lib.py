@@ -78,13 +78,13 @@ def read_in_lkb(lkb_file_name):
 
 def sort_lkb_by_count(lkb):
     #TODO
-    sorted_lkb = sorted(lkb.iteritems(), key=operator.itemgetter(1).getCount(), reverse=True)
+    sorted_lkb = sorted(iter(lkb.items()), key=operator.itemgetter(1).getCount(), reverse=True)
     return sorted_lkb
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <first-argument>" % (sys.argv[0])
+        print("Usage: %s <first-argument>" % (sys.argv[0]))
         sys.exit(1)
 
-    print "Does nothing!"
+    print("Does nothing!")
 

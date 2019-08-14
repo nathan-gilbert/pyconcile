@@ -50,8 +50,7 @@ if __name__ == "__main__":
     start_time = time.time()
     files = []
     with open(options.filelist, 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     #start processing the annotated files
     doc_num = 1
@@ -59,13 +58,13 @@ if __name__ == "__main__":
     for f in files:
         doc_start_time = time.time()
         f = f.strip()
-        print "Working on document: %s (%d/%d) " % (f, doc_num, len(files)),
+        print("Working on document: %s (%d/%d) " % (f, doc_num, len(files)), end=' ')
         doc_num += 1
         gold_chains = reconcile.getGoldChains(f)
         gold_nps = reconcile.getNPs(f)
         reconcile.addSundanceProps(f, gold_nps)
 
-        for gc in gold_chains.keys():
+        for gc in list(gold_chains.keys()):
             for np1 in gold_chains[gc]:
                 np1_text_ident = np1.getATTR("TEXT_CLEAN").lower()
                 np1_text_ident = utils.cleanPre(np1_text_ident)
@@ -73,11 +72,11 @@ if __name__ == "__main__":
                 #remove appositives too
                 np1_text_ident = utils.remove_appositives(np1_text_ident)
                 if np1_text_ident == "":
-                    print >> sys.stderr, "NULL Ident Text: {0} Real Text: {1}".format(np1.getText(), f)
+                    print("NULL Ident Text: {0} Real Text: {1}".format(np1.getText(), f), file=sys.stderr)
                     sys.exit(1)
 
                 #creating the entry if necessary
-                if np1_text_ident not in lkb.keys():
+                if np1_text_ident not in list(lkb.keys()):
                     #create the entry
                     new_entry = Entry()
                     new_entry.setText(np1_text_ident)
@@ -105,7 +104,7 @@ if __name__ == "__main__":
                     np2_text_ident = np2.getATTR("TEXT_CLEAN")
                     #np2_text_ident = utils.cleanPre(np2_text_ident)
                     if np2_text_ident == "":
-                        print >> sys.stderr, "NULL Ident Text: {0} Real Text: {1}".format(np2.getText(), f)
+                        print("NULL Ident Text: {0} Real Text: {1}".format(np2.getText(), f), file=sys.stderr)
                         sys.exit(1)
 
                     #+get the word pair
@@ -135,10 +134,10 @@ if __name__ == "__main__":
                         lkb[np1_text_ident].addSemantic("ST", np2_text_ident, np2_stanford_semantic_tag)
 
         doc_end_time = time.time()
-        print "process time: %0.3f minutes" % ((doc_end_time-doc_start_time)/60)
+        print("process time: %0.3f minutes" % ((doc_end_time-doc_start_time)/60))
     end_time = time.time()
-    print "Total time: %0.3f minutes" % ((end_time-start_time)/60)
-    sorted_entries = sorted(lkb.iteritems(), key=lambda x : x[1].getCount(),reverse=True)
+    print("Total time: %0.3f minutes" % ((end_time-start_time)/60))
+    sorted_entries = sorted(iter(lkb.items()), key=lambda x : x[1].getCount(),reverse=True)
 
     if options.reconcile:
         with open(options.lkb_outfile, 'w') as outfile:
@@ -148,5 +147,5 @@ if __name__ == "__main__":
 
     if options.human:
         for entry in sorted_entries:
-            print entry[1]
+            print(entry[1])
 

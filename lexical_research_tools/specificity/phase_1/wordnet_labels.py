@@ -37,7 +37,7 @@ def get_color(d):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-dir>" % (sys.argv[0])
+        print("Usage: %s <file-dir>" % (sys.argv[0]))
         sys.exit(1)
 
     #NOTE: assumes that the nps file will only have gold_nps in it.
@@ -77,11 +77,11 @@ if __name__ == "__main__":
 
     #normalize the labels
     highest = -1
-    for key in buf.keys():
+    for key in list(buf.keys()):
         if buf[key] > highest:
             highest = buf[key]
 
-    for key in buf.keys():
+    for key in list(buf.keys()):
         label = round((float(buf[key]) / highest) * 3)
         #overiding some of these decisions
         if label == 0:
@@ -98,7 +98,7 @@ if __name__ == "__main__":
         byte = 0
         for ch in rawText:
             close_text = ""
-            for key in labels.keys():
+            for key in list(labels.keys()):
                 color = get_color(int(labels[key]))
                 label = labels[key]
                 start = int(key.split(":")[0])

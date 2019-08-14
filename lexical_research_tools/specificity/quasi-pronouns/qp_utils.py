@@ -187,7 +187,7 @@ def getHead2(text, pos):
     if len(FIXES) < 1:
         read_in_fixes()
 
-    if text in FIXES.keys():
+    if text in list(FIXES.keys()):
         return FIXES[text]
 
     left = []

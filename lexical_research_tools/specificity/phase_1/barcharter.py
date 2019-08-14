@@ -19,7 +19,7 @@ def autolabel(rects):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <barchart-file>" % (sys.argv[0])
+        print("Usage: %s <barchart-file>" % (sys.argv[0]))
         sys.exit(1)
 
     stat2value = {}
@@ -61,7 +61,7 @@ if __name__ == "__main__":
         for w_cls in word_classes:
             i=0
             gap=0
-            for ds in domains.keys():
+            for ds in list(domains.keys()):
                 if not stat.startswith("WORD") :
                     rect = ax.bar(ind+gap, domains[ds][stat], width, color=colors[i])
                 elif stat.startswith("WORD_MEAN"):

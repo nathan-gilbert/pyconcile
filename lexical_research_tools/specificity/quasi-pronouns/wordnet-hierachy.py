@@ -14,7 +14,7 @@ from pyconcile.bar import ProgressBar
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <wordlist> <senselist>" % (sys.argv[0])
+        print("Usage: %s <wordlist> <senselist>" % (sys.argv[0]))
         sys.exit(1)
 
     TOPLEVELS = {
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
     wordlist = []
     with open(sys.argv[1], 'r') as wordList:
-        wordlist.extend(map(lambda x : x.strip(), wordList.readlines()))
+        wordlist.extend([x.strip() for x in wordList.readlines()])
 
     senselist = defaultdict(list)
     with open(sys.argv[2], 'r') as wnSenseList:
@@ -61,7 +61,7 @@ if __name__ == "__main__":
             word = tokens[0].strip()
             senses = tokens[1].split(",")
             if len(senses) > 1:
-                senses = map(int, senses)
+                senses = list(map(int, senses))
                 senselist[word].extend(senses)
             else:
                 senselist[word].append(int(senses[0].replace("*","").replace("+","")))
@@ -105,7 +105,7 @@ if __name__ == "__main__":
                     path.reverse()
                     #print path
                     for syn in path:
-                        for key in TOPLEVELS.keys():
+                        for key in list(TOPLEVELS.keys()):
                             if syn == TOPLEVELS[key]:
                                 sp = synset.shortest_path_distance(TOPLEVELS[key])
                                 #print "{0:20} : {1:10} : {2}".format(word, key, sp)
@@ -129,6 +129,6 @@ if __name__ == "__main__":
     #for key in MAX_DEPTH:
     #    print "{0:3} {1}".format(key, MAX_DEPTH[key])
 
-    for word in words2depth.keys():
-        print "{0:20} {1:3} {2} {3}".format(word, words2sem[word],
-                words2depth[word], MAX_DEPTH[words2sem[word]])
+    for word in list(words2depth.keys()):
+        print("{0:20} {1:3} {2} {3}".format(word, words2sem[word],
+                words2depth[word], MAX_DEPTH[words2sem[word]]))

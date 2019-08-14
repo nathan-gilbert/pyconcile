@@ -15,17 +15,17 @@ from pyconcile import data
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist>" % (sys.argv[0])
+        print("Usage: %s <filelist>" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"), fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     heads = []
     for f in files:
         f=f.strip()
-        print "Working on {0}".format(f)
+        print("Working on {0}".format(f))
         common_nouns = reconcile.getFauxPronouns(f)
 
         for cn in common_nouns:

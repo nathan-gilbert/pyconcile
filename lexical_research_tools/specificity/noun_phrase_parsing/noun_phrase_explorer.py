@@ -112,18 +112,17 @@ def getHead(text):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist>" % (sys.argv[0])
+        print("Usage: %s <filelist>" % (sys.argv[0]))
         sys.exit(1)
 
     #let's look at some noun phrases for each domain.
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     for f in files:
         f=f.strip()
-        print "Working on file: {0}".format(f)
+        print("Working on file: {0}".format(f))
         allNPs = {}
         nps = reconcile.getNPs(f)
         pos = reconcile.getPOS(f)
@@ -137,7 +136,7 @@ if __name__ == "__main__":
             if len(tokens) == 1:
                 continue
 
-            if key not in allNPs.keys():
+            if key not in list(allNPs.keys()):
                 allNPs[key] = NP(np.getText().replace("\n", " "))
                 allNPs[key].start = np.getStart()
                 allNPs[key].end = np.getEnd()
@@ -235,7 +234,7 @@ if __name__ == "__main__":
         #output the mod results
         with open(f + "/annotations/mods", 'w') as outFile:
             i=0
-            for key in allNPs.keys():
+            for key in list(allNPs.keys()):
                 props = \
                 "ADJ=\"{0}\"\tPRP=\"{1}\"\tNOM=\"{2}\"\tOTH=\"{3}\"\tPOSS=\"{4}\"\tCLA=\"{5}\"\tPREP=\"{6}\"".format(allNPs[key].adj_mod,
                         allNPs[key].prp_mod,

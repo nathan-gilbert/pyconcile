@@ -129,7 +129,7 @@ def processACE(f, np, heads2qp):
         text = utils.textClean(np.getText())
 
         #bookkeeping
-        if head not in heads2qp.keys():
+        if head not in list(heads2qp.keys()):
             heads2qp[head] = QuasiPronoun(head)
         else:
             heads2qp[head].updateDocs(f)
@@ -139,7 +139,7 @@ def processACE(f, np, heads2qp):
             heads2qp[head].singelton += 1
         else:
             #does it start the chain?
-            for gc in gold_chains.keys():
+            for gc in list(gold_chains.keys()):
                 if gold_chains[gc][0] == np:
                     heads2qp[head].starts_chain += 1
                     break
@@ -148,7 +148,7 @@ def processACE(f, np, heads2qp):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list>" % (sys.argv[0])
+        print("Usage: %s <file-list>" % (sys.argv[0]))
         sys.exit(1)
 
     #PREDICTIONS = "features.goldnps/predictions.StanfordSieve.all_commons"
@@ -157,12 +157,11 @@ if __name__ == "__main__":
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     wordlist = []
     with open(sys.argv[2], 'r') as wordList:
-        wordlist.extend(map(lambda x : x.strip(), wordList.readlines()))
+        wordlist.extend([x.strip() for x in wordList.readlines()])
 
     i=0
     prog = ProgressBar(len(files))
@@ -199,8 +198,8 @@ if __name__ == "__main__":
                     processACE(f,pair[1],incorrect_qps)
     sys.stderr.write("\r \r\n")
 
-    print len(correct_qps.keys())
-    print len(incorrect_qps.keys())
+    print(len(list(correct_qps.keys())))
+    print(len(list(incorrect_qps.keys())))
 
     columns = {}
     with open("/home/ngilbert/public_html/ace.qp.html", 'w') as htmlFile:

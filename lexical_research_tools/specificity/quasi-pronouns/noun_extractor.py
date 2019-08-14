@@ -48,13 +48,12 @@ def collectPronouns(nps):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist>" % (sys.argv[0])
+        print("Usage: %s <filelist>" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     if sys.argv[1].find("ace") > -1:
         ACE = True
@@ -98,17 +97,17 @@ if __name__ == "__main__":
             text = utils.textClean(np.getText()).lower().strip()
             tags = pos.getSubset(np.getStart(), np.getEnd())
             head = qp_utils.getHead2(text, tags)
-            print "{0:7} {1:60} => {2}".format("PROPER:", text, head)
+            print("{0:7} {1:60} => {2}".format("PROPER:", text, head))
 
         for np in common_nouns:
             text = utils.textClean(np.getText()).lower().strip()
             tags = pos.getSubset(np.getStart(), np.getEnd())
             head = qp_utils.getHead2(text, tags)
-            print "{0:7} {1:60} => {2}".format("COMMON:", text, head)
+            print("{0:7} {1:60} => {2}".format("COMMON:", text, head))
 
         for np in pronouns:
             text = utils.textClean(np.getText()).lower().strip()
             tags = pos.getSubset(np.getStart(), np.getEnd())
             head = qp_utils.getHead2(text, tags)
-            print "{0:8} {1:60} => {2}".format("PRONOUN:", text, head)
+            print("{0:8} {1:60} => {2}".format("PRONOUN:", text, head))
 

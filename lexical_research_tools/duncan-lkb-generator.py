@@ -62,15 +62,14 @@ if __name__ == "__main__":
     start_time = time.time()
     files = []
     with open(options.filelist, 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     doc_num = 1
     lkb = {}
     for f in files:
         doc_start_time = time.time()
         f = f.strip()
-        print "Working on document: %s (%d/%d) " % (f, doc_num, len(files)),
+        print("Working on document: %s (%d/%d) " % (f, doc_num, len(files)), end=' ')
         doc_num += 1
 
         #read in duncan files
@@ -89,11 +88,11 @@ if __name__ == "__main__":
             if ant_text_ident.endswith(","):
                 ant_text_ident = ant_text_ident[:-1]
             if ant_text_ident == "":
-                print >> sys.stderr, "NULL Ident Text: {0} Real Text: {1}".format(np1.getText(), f)
+                print("NULL Ident Text: {0} Real Text: {1}".format(np1.getText(), f), file=sys.stderr)
                 sys.exit(1)
 
             #add duncan pairs to the lkb
-            if ant_text_ident not in lkb.keys():
+            if ant_text_ident not in list(lkb.keys()):
                 #create the entry
                 new_entry = Entry()
                 new_entry.setText(ant_text_ident)
@@ -115,7 +114,7 @@ if __name__ == "__main__":
             if ana_text_ident.endswith(","):
                 ana_text_ident = ana_text_ident[:-1]
             if ana_text_ident == "":
-                print >> sys.stderr, "NULL Ident Text: {0} Real Text: {1}".format(np2.getText(), f)
+                print("NULL Ident Text: {0} Real Text: {1}".format(np2.getText(), f), file=sys.stderr)
                 sys.exit(1)
 
             #adding the coref pair
@@ -128,10 +127,10 @@ if __name__ == "__main__":
                 for tag in np2_sundance_semantic_tags:
                     lkb[ant_text_ident].addSemantic("SU", ana_text_ident, tag)
         doc_end_time = time.time()
-        print "process time: %0.3f minutes" % ((doc_end_time-doc_start_time)/60)
+        print("process time: %0.3f minutes" % ((doc_end_time-doc_start_time)/60))
     end_time = time.time()
-    print "Total time: %0.3f minutes" % ((end_time-start_time)/60)
-    sorted_entries = sorted(lkb.iteritems(), key=lambda x : x[1].getCount(),
+    print("Total time: %0.3f minutes" % ((end_time-start_time)/60))
+    sorted_entries = sorted(iter(lkb.items()), key=lambda x : x[1].getCount(),
             reverse=True)
 
     if options.reconcile:
@@ -142,4 +141,4 @@ if __name__ == "__main__":
 
     if options.human:
         for entry in sorted_entries:
-            print entry[1]
+            print(entry[1])

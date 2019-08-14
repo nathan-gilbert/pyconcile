@@ -15,17 +15,16 @@ from pyconcile import data
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list> <vp-list> [-hobbs|-rap|-rec|-sieve|-baseline]" % (sys.argv[0])
+        print("Usage: %s <file-list> <vp-list> [-hobbs|-rap|-rec|-sieve|-baseline]" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"), fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     QPs = []
     with open(sys.argv[2], 'r') as vpList:
-        QPs.extend(map(string.strip, filter(lambda x : not x.startswith("#"),
-            vpList.readlines())))
+        QPs.extend(list(map(string.strip, [x for x in vpList.readlines() if not x.startswith("#")])))
 
     if sys.argv[1].find("ace") > -1:
         ACE = True
@@ -64,7 +63,7 @@ if __name__ == "__main__":
     RESPONSE_TYPE = ""
     for f in files:
         f=f.strip()
-        print "Working on file: {0}".format(f)
+        print("Working on file: {0}".format(f))
         gold_chains = reconcile.getGoldChains(f)
         pos = reconcile.getPOS(f)
         pairs = []
@@ -76,7 +75,7 @@ if __name__ == "__main__":
                 tags = pos.getSubset(pair[1].getStart(), pair[1].getEnd())
                 text = utils.textClean(pair[1].getText()).lower()
                 ana_head = qp_utils.getHead2(text, tags)
-                print "{0:40} => {1}".format(text, ana_head)
+                print("{0:40} => {1}".format(text, ana_head))
                 if ana_head in QPs:
                     pairs.append(pair)
 
@@ -136,26 +135,26 @@ if __name__ == "__main__":
                 if ana_head in QPs:
                     pairs.append(pair)
         else:
-            print "Please select response type."
+            print("Please select response type.")
             sys.exit(1)
 
         labeled_annots = reconcile.labelCorrectPairs(gold_chains, pairs)
         for pair in labeled_annots:
             total_scores["vps_guessed"] += 1
             if pair[2]:
-                print pair[0].ppprint() + " <- " + pair[1].ppprint()
+                print(pair[0].ppprint() + " <- " + pair[1].ppprint())
                 total_scores["vps_correct"] += 1
             else:
-                print pair[0].ppprint() + " <- " + pair[1].ppprint() + "*"
+                print(pair[0].ppprint() + " <- " + pair[1].ppprint() + "*")
 
-    print "="*72
-    print "{0} accuracy".format(RESPONSE_TYPE)
+    print("="*72)
+    print("{0} accuracy".format(RESPONSE_TYPE))
     try:
         result = total_scores["vps_correct" ] / float(total_scores["vps_guessed"])
-        print "Total: {0} / {1} = {2:0.2f}".format(total_scores["vps_correct"],
-                total_scores["vps_guessed"], result)
+        print("Total: {0} / {1} = {2:0.2f}".format(total_scores["vps_correct"],
+                total_scores["vps_guessed"], result))
     except:
         result = 0.0
-        print "Total: {0} / {1} = {2:0.2f}".format(total_scores["vps_correct"],
-                total_scores["vps_guessed"], result)
+        print("Total: {0} / {1} = {2:0.2f}".format(total_scores["vps_correct"],
+                total_scores["vps_guessed"], result))
 

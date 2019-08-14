@@ -27,7 +27,7 @@ class Entry:
         self._doc_count = {}
 
         #unique identifier for this instance
-        self._index = self.__index.next()
+        self._index = next(self.__index)
 
         #word_pairs are indexed by document then ce
         self.word_pairs = defaultdict(list)
@@ -77,7 +77,7 @@ class Entry:
         self.word_pairs[doc].append(ce)
 
     def addSemantic(self, source, ce, semantic_class):
-        if ce in self.lexico_semantic[source].keys():
+        if ce in list(self.lexico_semantic[source].keys()):
             self.lexico_semantic[source][ce].append(semantic_class)
         else:
             self.lexico_semantic[source][ce] = [semantic_class]
@@ -89,14 +89,14 @@ class Entry:
         """
         counts = {}
         if full_string:
-            for doc in self.word_pairs.keys():
+            for doc in list(self.word_pairs.keys()):
                 for ce in self.word_pairs[doc]:
                     ce_clean = utils.getReconcileCleanString(ce.lower())
                     counts[ce_clean] = counts.get(ce_clean, 0) + 1
                     #counts[ce.lower()] = counts.get(ce.lower(), 0) + 1
             return counts
         else:
-            for doc in self.word_pairs.keys():
+            for doc in list(self.word_pairs.keys()):
                 for ce in self.word_pairs[doc]:
                     ce_head = utils.getReconcileHead(ce.lower())
                     counts[ce_head] = counts.get(ce_head, 0) + 1
@@ -105,14 +105,14 @@ class Entry:
 
     def getLexicoSemanticCounts(self, source):
         counts = {}
-        for ce in self.lexico_semantic[source].keys():
+        for ce in list(self.lexico_semantic[source].keys()):
             for sem_cls in self.lexico_semantic[source][ce]:
                 counts[sem_cls] = counts.get(sem_cls, 0) + 1
         return counts
 
     def getNonStringMatchLSCounts(self, source):
         counts = {}
-        for ce in self.lexico_semantic[source].keys():
+        for ce in list(self.lexico_semantic[source].keys()):
             ce_clean = utils.getReconcileCleanString(ce.lower())
             if ce_clean == self._text:
                 continue
@@ -122,10 +122,10 @@ class Entry:
 
     def getNormalizedSemanticCounts(self, source):
         counts = defaultdict(dict)
-        for ce in self.lexico_semantic[source].keys():
+        for ce in list(self.lexico_semantic[source].keys()):
             ce_clean = utils.getReconcileCleanString(ce.lower())
             for sem_cls in self.lexico_semantic[source][ce]:
-                if ce_clean in counts.keys():
+                if ce_clean in list(counts.keys()):
                     counts[ce_clean][sem_cls] = counts[ce_clean].get(sem_cls, 0) + 1
                 else:
                     counts[ce_clean] = {sem_cls : 1}
@@ -142,25 +142,25 @@ class Entry:
         final_string += "Count: {0}\n".format(self._count)
 
         final_string += "=Doc Count Begin=\n"
-        for doc in self._doc_count.keys():
+        for doc in list(self._doc_count.keys()):
             final_string += "{0} $!$ {1}\n".format(doc, self._doc_count[doc])
         final_string += "=Doc Count End=\n"
 
         final_string += "=CEs Begin=\n"
-        for doc in self.word_pairs.keys():
+        for doc in list(self.word_pairs.keys()):
             for ce in set(self.word_pairs[doc]):
                 #format: doc $!$ ce 
                 final_string += "{0} $!$ {1} $!$ {2}\n".format(doc, ce, self.word_pairs[doc].count(ce))
         final_string += "=CEs End=\n"
 
         final_string += "=Self Tags Begin=\n"
-        for source in self.this_semantic_tags.keys():
+        for source in list(self.this_semantic_tags.keys()):
             for tag in set(self.this_semantic_tags[source]):
                 final_string += "{0} $!$ {1} $!$ {2}\n".format(source, tag, self.this_semantic_tags[source].count(tag))
         final_string += "=Self Tags End=\n"
 
         final_string += "=Semantic Begin=\n"
-        for source in self.lexico_semantic.keys():
+        for source in list(self.lexico_semantic.keys()):
             #for some reason, I had each semantic class getting assigned the
             #same overall count?
             #sem_counts = self.getLexicoSemanticCounts(source)
@@ -184,16 +184,16 @@ class Entry:
         final_string += "Count: {0}\n".format(self._count)
         final_string += "CEs =>\n"
         word_pair_counts = self.getAntecedentCounts(False)
-        sorted_counts = sorted(word_pair_counts.iteritems(),
+        sorted_counts = sorted(iter(word_pair_counts.items()),
                 key=itemgetter(1), reverse=True)
         for pair in sorted_counts:
             final_string += "\t{0:50} : {1}\n".format(pair[0], pair[1])
         final_string += "="*72 + "\n"
 
-        for source in self.lexico_semantic.keys():
+        for source in list(self.lexico_semantic.keys()):
             norm_sem_counts = self.getNormalizedSemanticCounts(source)
             #for ce in self.lexico_semantic[source]:
-            for ce in norm_sem_counts.keys():
+            for ce in list(norm_sem_counts.keys()):
                 #only print out the first entry for wordnet human consumption
                 if source == "WN":
                     for sem_cls in norm_sem_counts[ce]:

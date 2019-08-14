@@ -17,7 +17,7 @@ def make_wordpair(lkb):
     with open(feature_template, 'r') as inFile:
         feature_template_lines.extend(inFile.readlines())
     feat_count = 0
-    for entry in lkb.keys():
+    for entry in list(lkb.keys()):
         if lkb[entry].getCount() < 2:
             continue
         feat_name = "Feature" + str(feat_count)
@@ -32,12 +32,12 @@ def make_wordpair(lkb):
                     outFile.write(line)
                 elif line.find("private static final String[] ANTECEDENTS") > -1:
                     #gather all the antecedents here.
-                    antecedents = map(string.strip,
-                            lkb[entry].getAntecedentCounts().keys())
-                    antecedents = map(lambda x : x.replace("\"","\\\""), antecedents)
-                    antecedents = map(lambda x : x.replace("\'","\\\'"), antecedents)
-                    antecedents = filter(lambda x : x != "", antecedents)
-                    antecedent_str = ", ".join(map(lambda x : "\"{0}\"".format(x), antecedents))
+                    antecedents = list(map(string.strip,
+                            list(lkb[entry].getAntecedentCounts().keys())))
+                    antecedents = [x.replace("\"","\\\"") for x in antecedents]
+                    antecedents = [x.replace("\'","\\\'") for x in antecedents]
+                    antecedents = [x for x in antecedents if x != ""]
+                    antecedent_str = ", ".join(["\"{0}\"".format(x) for x in antecedents])
                     line = line.replace("\"REPLACE_ME\"", antecedent_str)
                     outFile.write(line)
                 elif line.find("private static final String THIS_TEXT") > -1:
@@ -51,7 +51,7 @@ def make_wordpair(lkb):
     config_line = ""
     for i in range(0, feat_count):
         config_line += "FEATURE_NAMES=setFeatures.Feature" + str(i) + "\n"
-    print config_line
+    print(config_line)
 
 def make_ss(lkb):
     feature_template =\
@@ -60,7 +60,7 @@ def make_ss(lkb):
     with open(feature_template, 'r') as inFile:
         feature_template_lines.extend(inFile.readlines())
     feat_count = 0
-    for entry in lkb.keys():
+    for entry in list(lkb.keys()):
         if lkb[entry].getCount() < 2:
             continue
         feat_name = "SunFeature" + str(feat_count)
@@ -75,12 +75,12 @@ def make_ss(lkb):
                     outFile.write(line)
                 elif line.find("private static final String[] SEM_CLASSES") > -1:
                     #gather all the antecedents here.
-                    nes = lkb[entry].getLexicoSemanticCounts("SU").keys()
+                    nes = list(lkb[entry].getLexicoSemanticCounts("SU").keys())
                     nes2 = lkb[entry].getSemanticTags("SU")
                     for ne in nes2:
                         if ne not in nes:
                             nes.append(ne)
-                    nes = ", ".join(map(lambda x : "\"{0}\"".format(x), nes))
+                    nes = ", ".join(["\"{0}\"".format(x) for x in nes])
                     line = line.replace("\"REPLACE_ME\"", nes)
                     outFile.write(line)
                 elif line.find("private static final String THIS_TEXT") > -1:
@@ -94,7 +94,7 @@ def make_ss(lkb):
     config_line = ""
     for i in range(0, feat_count):
         config_line += "FEATURE_NAMES=setFeatures.SunFeature" + str(i) + "\n"
-    print config_line
+    print(config_line)
 
 def make_wn(lkb):
     feature_template = \
@@ -103,7 +103,7 @@ def make_wn(lkb):
     with open(feature_template, 'r') as inFile:
         feature_template_lines.extend(inFile.readlines())
     feat_count = 0
-    for entry in lkb.keys():
+    for entry in list(lkb.keys()):
         if lkb[entry].getCount() < 2:
             continue
         feat_name = "WNFeature" + str(feat_count)
@@ -118,12 +118,12 @@ def make_wn(lkb):
                     outFile.write(line)
                 elif line.find("private static final String[] SEM_CLASSES") > -1:
                     #gather all the antecedents here.
-                    nes = lkb[entry].getLexicoSemanticCounts("WN").keys()
+                    nes = list(lkb[entry].getLexicoSemanticCounts("WN").keys())
                     #nes2 = lkb[entry].getSemanticTags("WN")
                     #for ne in nes2:
                     #    if ne not in nes:
                     #        nes.append(ne)
-                    nes = ", ".join(map(lambda x : "\"{0}\"".format(x), nes))
+                    nes = ", ".join(["\"{0}\"".format(x) for x in nes])
                     line = line.replace("\"REPLACE_ME\"", nes)
                     outFile.write(line)
                 elif line.find("private static final String THIS_TEXT") > -1:
@@ -137,11 +137,11 @@ def make_wn(lkb):
     config_line = ""
     for i in range(0, feat_count):
         config_line += "FEATURE_NAMES=setFeatures.WNFeature" + str(i) + "\n"
-    print config_line
+    print(config_line)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <lkb-file> +ss +wn" % (sys.argv[0])
+        print("Usage: %s <lkb-file> +ss +wn" % (sys.argv[0]))
         sys.exit(1)
 
     #read in the lkb

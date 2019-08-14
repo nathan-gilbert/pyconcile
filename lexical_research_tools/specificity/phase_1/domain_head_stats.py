@@ -71,12 +71,12 @@ class Noun:
             bare = 0.0
 
         try:
-            mentions_per_doc = float(self.count) / len(self.docs.keys())
+            mentions_per_doc = float(self.count) / len(list(self.docs.keys()))
         except:
             mentions_per_doc = 0.0
 
         try:
-            median_mentions_per_doc = specificity_utils.median(self.docs.values())
+            median_mentions_per_doc = specificity_utils.median(list(self.docs.values()))
         except:
             median_mentions_per_doc = 0.0
 
@@ -98,7 +98,7 @@ class Noun:
         s = "{0:15} {1:5} {2:4} {3:0.2f} {4:0.2f} {5:0.2f} {6:0.2f} {7:0.2f} {8:0.2f} {9:0.2f} {10:0.2f}".format(
                 self.head,
                 self.count,
-                len(self.docs.keys()),
+                len(list(self.docs.keys())),
                 definite,
                 indefinite,
                 bare,
@@ -118,7 +118,7 @@ def getSentence(np, sent):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist> <headlist>" % (sys.argv[0])
+        print("Usage: %s <filelist> <headlist>" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
@@ -179,12 +179,12 @@ if __name__ == "__main__":
 
     #sys.stdout.write("\r \r\n")
     #os.system("clear")
-    sorted_nouns = sorted(head2nouns.values(), key=operator.attrgetter('count'), reverse=True)
-    print "{0:15} {1:5} {2:4} {3:>4} {4:>4} {5:>4} {6:>4} {7:>4} {8:>4} {9:>4} {10:>4}".format("head", "count", "docs", "D", "I", "B", "MD", "MMD", "fBA", "S", "O")
-    print
+    sorted_nouns = sorted(list(head2nouns.values()), key=operator.attrgetter('count'), reverse=True)
+    print("{0:15} {1:5} {2:4} {3:>4} {4:>4} {5:>4} {6:>4} {7:>4} {8:>4} {9:>4} {10:>4}".format("head", "count", "docs", "D", "I", "B", "MD", "MMD", "fBA", "S", "O"))
+    print()
 
     for noun in sorted_nouns:
-        if len(noun.docs.keys()) < 3:
+        if len(list(noun.docs.keys())) < 3:
             continue
-        print noun
+        print(noun)
 

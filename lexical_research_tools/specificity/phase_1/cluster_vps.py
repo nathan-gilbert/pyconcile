@@ -13,7 +13,7 @@ from collections import defaultdict
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <vp-file>" % (sys.argv[0])
+        print("Usage: %s <vp-file>" % (sys.argv[0]))
         sys.exit(1)
 
     heads = []
@@ -25,7 +25,7 @@ if __name__ == "__main__":
             if line.startswith("#"): continue
 
             if line.startswith("head"):
-                print "first line {0}".format(line)
+                print("first line {0}".format(line))
                 tokens = line.split()
                 key = tokens[5:]
                 del key[5]
@@ -49,7 +49,7 @@ if __name__ == "__main__":
             line = line.strip()
             if line == "": continue #skip blank lines
             tokens = line.split()
-            v = map(lambda x : float(x), tokens[5:])
+            v = [float(x) for x in tokens[5:]]
 
             del v[5] #remove ss
             del v[-2] #remove aidf
@@ -61,13 +61,13 @@ if __name__ == "__main__":
 
     #print len(heads)
     #print len(values)
-    print key
+    print(key)
     #print heads
     #print values
     vectors = [array(f) for f in values]
     clusterer = cluster.KMeansClusterer(3, euclidean_distance)
     clusters = clusterer.cluster(vectors, True)
-    print clusters
+    print(clusters)
     #print len(clusters)
     #print vectors
 
@@ -77,10 +77,10 @@ if __name__ == "__main__":
         cl = clusters[i]
         cluster2head[cl].append(head)
 
-    for cl in cluster2head.keys():
-        print "Cluster: {0}".format(cl)
-        print "{0:31} {1}".format("head", key)
+    for cl in list(cluster2head.keys()):
+        print("Cluster: {0}".format(cl))
+        print("{0:31} {1}".format("head", key))
         for head in cluster2head[cl]:
-            s = map(lambda x : "{0:4.2f}".format(x), heads2values[head])
-            print "\t{0:20} => {1}".format(head, s)
-        print
+            s = ["{0:4.2f}".format(x) for x in heads2values[head]]
+            print("\t{0:20} => {1}".format(head, s))
+        print()

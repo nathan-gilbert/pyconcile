@@ -24,7 +24,7 @@ def collectACEFPs(ace_annots, this_files_common_nouns):
                 if gold_text in ("the "+gold_head, "that "+gold_head, "this "+gold_head, "these "+gold_head, "those "+gold_head):
                     this_files_common_nouns.append(gold_np)
         else:
-            print "couldn't find {0} in the gold".format(np)
+            print("couldn't find {0} in the gold".format(np))
 
 def collectFPs(gold_nps, this_files_common_nouns):
     for np in gold_nps:
@@ -52,13 +52,13 @@ def checkForModification(fp, tokens, pos):
                 #if there is *any* post modification inside of the annotation, skip
                 #it.
                 if tok.getEnd() <= fp.getEnd():
-                    print "Removing {0:20}".format(fp.pprint())
+                    print("Removing {0:20}".format(fp.pprint()))
                     return True
 
                 tag = pos.getAnnotBySpan(tok.getStart(),tok.getEnd())["TAG"]
                 if (tag == "IN") or (tok.getText().lower() in data.relatives):
-                    print "Removing {0:20} : {1:10} : {2}".format(fp.pprint(),
-                            tokens.get(i+1).pprint(), tag)
+                    print("Removing {0:20} : {1:10} : {2}".format(fp.pprint(),
+                            tokens.get(i+1).pprint(), tag))
                     return True
                 else:
                     return False
@@ -66,7 +66,7 @@ def checkForModification(fp, tokens, pos):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list> [-ace]" % (sys.argv[0])
+        print("Usage: %s <file-list> [-ace]" % (sys.argv[0]))
         sys.exit(1)
 
     #if working with ACE data, read in the ACE annots and only 
@@ -79,8 +79,7 @@ if __name__ == "__main__":
     not_common_nps = []
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     #if ACE:
         #with open(sys.argv[2], 'r') as aceFile:
@@ -100,7 +99,7 @@ if __name__ == "__main__":
 
     for f in files:
         f=f.strip()
-        print "Working on file: {0}".format(f)
+        print("Working on file: {0}".format(f))
         this_files_common_nouns = []
         if ACE:
             tokens = reconcile.getTokens(f)

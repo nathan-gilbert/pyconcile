@@ -56,7 +56,7 @@ class Pronoun:
         self.sent_distances[ant_text].append(sd)
     def wd_distance_histogram(self):
         histo = {}
-        for key in self.word_distances.keys():
+        for key in list(self.word_distances.keys()):
             #key is a word
             for dist in self.word_distances[key]:
                 histo[str(dist)] = histo.get(str(dist), 0) + 1
@@ -64,7 +64,7 @@ class Pronoun:
 
     def sent_distance_histogram(self):
         histo = {}
-        for key in self.sent_distances.keys():
+        for key in list(self.sent_distances.keys()):
             #the 'key' is an antecedent
             for dist in self.sent_distances[key]:
                 #the 'dist' is the distance we have witnessed this antecedent
@@ -80,14 +80,14 @@ class Pronoun:
         below = 0
         histo2 = {}
         #print range(0,  max(map(lambda x : int(x), histo.keys())))]
-        for i in range(0, max(map(lambda x : int(x), histo.keys()))+1):
+        for i in range(0, max([int(x) for x in list(histo.keys())])+1):
             histo2[str(i)] = float(below + histo.get(str(i), 0))
             below += histo.get(str(i), 0)
         #print histo2
         return histo2
 
 def add_stats(pronoun_class, doc, anaphor, text):
-    if text in pronoun_class.keys():
+    if text in list(pronoun_class.keys()):
         pronoun_class[text].updateCount()
     else:
         pronoun_class[text] = Pronoun(text)
@@ -168,7 +168,7 @@ def make_chart(histograms, dataset, chart_name, x_label, max_y=-1, max_x=-1):
     if max_x < 0:
         largest_x = -1
         for h in histograms:
-            l = max(map(lambda x : int(x), h.keys()))
+            l = max([int(x) for x in list(h.keys())])
             if l > largest_x:
                 largest_x = l
     else:
@@ -189,7 +189,7 @@ def make_chart(histograms, dataset, chart_name, x_label, max_y=-1, max_x=-1):
     # Create a new subplot from a grid of 1x1
     plt = subplot(1,1,1)
 
-    X = range(0, largest_x)
+    X = list(range(0, largest_x))
     T = [histograms[0].get(str(x), 0) for x in X]
     plot(X, T, color="blue", marker="o", linewidth=1.0, linestyle=":", label="third person singular")
     I = [histograms[1].get(str(x), 0) for x in X ]
@@ -200,13 +200,13 @@ def make_chart(histograms, dataset, chart_name, x_label, max_y=-1, max_x=-1):
     ## Set x limits
     xlim(0, largest_x)
     # Set x ticks
-    xticks(range(0, largest_x, 5))
+    xticks(list(range(0, largest_x, 5)))
 
     ## Set y limits
     ylim(0,int(largest_y))
 
     ## Set y ticks
-    yticks(range(0, int(largest_y), 5))
+    yticks(list(range(0, int(largest_y), 5)))
 
     #legend(loc='upper right')
     plt.set_xlabel("{0}".format(x_label))
@@ -221,25 +221,24 @@ def make_chart(histograms, dataset, chart_name, x_label, max_y=-1, max_x=-1):
 
 def make_pie_graph(dataset, stats):
     with open("piechart.stats", 'a') as outFile:
-        for key in stats.keys():
+        for key in list(stats.keys()):
             outFile.write("{0}$!${1}$!${2}\n".format(dataset, key, stats[key]))
 
 def make_bar_chart(dataset,stats):
     with open("barchart.stats", 'a') as outFile:
-        for key in stats.keys():
+        for key in list(stats.keys()):
             outFile.write("{0}$!${1}$!${2}\n".format(dataset, key, stats[key]))
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list> <dataset> -plot" % (sys.argv[0])
+        print("Usage: %s <file-list> <dataset> -plot" % (sys.argv[0]))
         sys.exit(1)
 
     DATASET = sys.argv[2]
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"),
-            fileList.readlines()))
+        files.extend([x for x in fileList.readlines() if not x.startswith("#")])
 
     third_person = {}
     it = {}
@@ -278,11 +277,11 @@ if __name__ == "__main__":
             else: continue
 
         #true singletons -- TODO: double check that these numbers are correct
-        for key in it.keys():
+        for key in list(it.keys()):
             it[key].singletons += doc.getSingletonCount(key)
-        for key in third_person.keys():
+        for key in list(third_person.keys()):
             third_person[key].singletons += doc.getSingletonCount(key)
-        for key in third_person_plural.keys():
+        for key in list(third_person_plural.keys()):
             third_person_plural[key].singletons += doc.getSingletonCount(key)
 
         #this word exists outside of annotations
@@ -310,54 +309,54 @@ if __name__ == "__main__":
     #histogram for sentence distance
     third_person_total_sent_histo = {}
     t_total_antecedents = 0
-    for key in third_person.keys():
+    for key in list(third_person.keys()):
         h = third_person[key].sent_distance_histogram()
         t_total_antecedents += len(third_person[key].closest_antecedents)
-        for dist in sorted(h.keys(), key=lambda x: int(x)):
+        for dist in sorted(list(h.keys()), key=lambda x: int(x)):
             #print key, dist, h[dist]
             #NOTE needs to bookkeep better when switching pronouns
             third_person_total_sent_histo[dist] = third_person_total_sent_histo.get(dist, 0) + h[dist]
 
     #print third_person_total_sent_histo
-    keys = third_person_total_sent_histo.keys()
+    keys = list(third_person_total_sent_histo.keys())
     keys = sorted(keys, key=lambda x : int(x))
     for key in keys:
-        print "{0} : {1} / {2} = {3}".format(key, third_person_total_sent_histo[key],
+        print("{0} : {1} / {2} = {3}".format(key, third_person_total_sent_histo[key],
                 t_total_antecedents,
-                float(third_person_total_sent_histo[key])/t_total_antecedents)
-    print
+                float(third_person_total_sent_histo[key])/t_total_antecedents))
+    print()
 
     it_total_sent_histo = {}
     it_total_antecedents = 0
-    for key in it.keys():
+    for key in list(it.keys()):
         h = it[key].sent_distance_histogram()
         it_total_antecedents += len(it[key].closest_antecedents)
-        for dist in h.keys():
+        for dist in list(h.keys()):
             it_total_sent_histo[dist] = it_total_sent_histo.get(dist, 0) + h[dist]
 
-    keys = it_total_sent_histo.keys()
+    keys = list(it_total_sent_histo.keys())
     keys = sorted(keys, key=lambda x : int(x))
     for key in keys:
-        print "{0} : {1} / {2} = {3}".format(key, it_total_sent_histo[key],
+        print("{0} : {1} / {2} = {3}".format(key, it_total_sent_histo[key],
                 it_total_antecedents,
-                float(it_total_sent_histo[key]/it_total_antecedents))
+                float(it_total_sent_histo[key]/it_total_antecedents)))
 
     third_person_plural_total_sent_histo = {}
     tp_total_antecedents = 0
-    for key in third_person_plural.keys():
+    for key in list(third_person_plural.keys()):
         h = third_person_plural[key].sent_distance_histogram()
         tp_total_antecedents += len(third_person_plural[key].closest_antecedents)
-        for dist in h.keys():
+        for dist in list(h.keys()):
             third_person_plural_total_sent_histo[dist] = third_person_plural_total_sent_histo.get(dist, 0) + h[dist]
 
-    print
+    print()
     #print third_person_plural_total_sent_histo
-    keys = third_person_plural_total_sent_histo.keys()
+    keys = list(third_person_plural_total_sent_histo.keys())
     keys = sorted(keys, key=lambda x : int(x))
     for key in keys:
-        print "{0} {1} / {2} = {3}".format(key, third_person_plural_total_sent_histo[key],
+        print("{0} {1} / {2} = {3}".format(key, third_person_plural_total_sent_histo[key],
                 tp_total_antecedents,
-                float(third_person_plural_total_sent_histo[key]/tp_total_antecedents))
+                float(third_person_plural_total_sent_histo[key]/tp_total_antecedents)))
 
     #combine histograms
     #histograms = (third_person_total_sent_histo,

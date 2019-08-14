@@ -15,13 +15,13 @@ import specificity_utils
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist> <vp-list>" % (sys.argv[0])
+        print("Usage: %s <filelist> <vp-list>" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files.extend(map(lambda x : x.strip(), filter(lambda x : not
-            x.startswith("#"), fileList.readlines())))
+        files.extend([x.strip() for x in [x for x in fileList.readlines() if not
+            x.startswith("#")]])
 
     heads = []
     with open(sys.argv[2], 'r') as headFile:
@@ -61,7 +61,7 @@ if __name__ == "__main__":
         #        print
 
         #find all the gold vps that were not assigned any cluster.
-        for chain in response_chains.keys():
+        for chain in list(response_chains.keys()):
             if len(response_chains[chain]) == 1:
                 mention = response_chains[chain][0]
                 head = specificity_utils.getHead(utils.textClean(mention.getText())).lower()
@@ -97,13 +97,13 @@ if __name__ == "__main__":
 
     total_not_found = 0
     total_wrong = 0
-    for head in head2none.keys():
-        print "{0:13} : {1:2} / {2:2} = {3:0.2f} | {4:2} / {5:2} = {6:0.2f} ".format(head, head2none[head],
+    for head in list(head2none.keys()):
+        print("{0:13} : {1:2} / {2:2} = {3:0.2f} | {4:2} / {5:2} = {6:0.2f} ".format(head, head2none[head],
                 head2counts[head], float(head2none[head]) / head2counts[head],
                 head2wrong.get(head, 0), head2counts[head],
-                float(head2wrong.get(head,0)) / head2counts[head])
+                float(head2wrong.get(head,0)) / head2counts[head]))
 
         total_not_found += head2none[head]
         total_wrong += head2wrong.get(head, 0)
-    print "{0} total vps missing antecedents.".format(total_not_found)
-    print "{0} totally wrong vps".format(total_wrong)
+    print("{0} total vps missing antecedents.".format(total_not_found))
+    print("{0} totally wrong vps".format(total_wrong))

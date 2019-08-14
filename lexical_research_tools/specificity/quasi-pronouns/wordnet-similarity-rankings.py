@@ -14,7 +14,7 @@ from pyconcile.bar import ProgressBar
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <wordlist> <senselist> <hierachy>" % (sys.argv[0])
+        print("Usage: %s <wordlist> <senselist> <hierachy>" % (sys.argv[0]))
         sys.exit(1)
 
     TOPLEVELS = {
@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     wordlist = []
     with open(sys.argv[1], 'r') as wordList:
-        wordlist.extend(map(lambda x : x.strip(), wordList.readlines()))
+        wordlist.extend([x.strip() for x in wordList.readlines()])
 
     senselist = defaultdict(list)
     with open(sys.argv[2], 'r') as wnSenseList:
@@ -45,7 +45,7 @@ if __name__ == "__main__":
             word = tokens[0].strip()
             senses = tokens[1].split(",")
             if len(senses) > 1:
-                senses = map(int, senses)
+                senses = list(map(int, senses))
                 senselist[word].extend(senses)
             else:
                 senselist[word].append(int(senses[0].replace("*","").replace("+","")))
@@ -88,7 +88,7 @@ if __name__ == "__main__":
         #find the wordnet similarity based on these two pieces of info.
         path_based_sim = TOPLEVELS[sem].path_similarity(synsets[0])
         lch_sim = TOPLEVELS[sem].lch_similarity(synsets[0])
-        print "{0:3}\t{1:>0.4f}\t{2:>0.4f}\t{3}".format(sem, path_based_sim, lch_sim, word)
+        print("{0:3}\t{1:>0.4f}\t{2:>0.4f}\t{3}".format(sem, path_based_sim, lch_sim, word))
 
         #TODO sort by semantic class, sort by the proper order (where the
         #top-level of the semantic class are at the top and so on.)
