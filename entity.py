@@ -5,7 +5,7 @@ Last Modified :
 @author: ngilbert
 '''
 
-from annotation import Annotation
+from .annotation import Annotation
 
 class Entity(object):
     '''

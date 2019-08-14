@@ -22,17 +22,17 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist> <treefile>" % (sys.argv[0])
+        print("Usage: %s <filelist> <treefile>" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
     with open(sys.argv[1], 'r') as fileList:
-        files = filter(lambda x : not x.startswith("#"), fileList.readlines())
+        files = [x for x in fileList.readlines() if not x.startswith("#")]
 
     treeLines = []
     with open(sys.argv[2], 'r') as treeFile:
-        treeLines = filter(lambda x : x != "", map(string.strip,
-            treeFile.readlines()))
+        treeLines = [x for x in map(string.strip,
+            treeFile.readlines()) if x != ""]
         del treeLines[0] #remove first 2 lines
         del treeLines[0]
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
     for f in files:
         f = f.strip()
-        print "Working on document: {0}".format(f)
+        print("Working on document: {0}".format(f))
         features_file = "/features.goldnps_ana_ant_propensity"
 
         rpairs = \
@@ -86,28 +86,28 @@ if __name__ == "__main__":
             else:
                 negative_res += 1
 
-    print "{0}/{1}/{2}".format(positive_res, negative_res,
-           positive_res+negative_res)
-    print "NOMS:{0} PRO:{1} PRP:{2} DAT:{3}".format(np_type["NOM"],
-           np_type["PRO"], np_type["PRP"], np_type["DAT"])
+    print("{0}/{1}/{2}".format(positive_res, negative_res,
+           positive_res+negative_res))
+    print("NOMS:{0} PRO:{1} PRP:{2} DAT:{3}".format(np_type["NOM"],
+           np_type["PRO"], np_type["PRP"], np_type["DAT"]))
 
-    sorted_pos_paths = sorted(pos_paths.iteritems(), key=operator.itemgetter(1),
+    sorted_pos_paths = sorted(iter(pos_paths.items()), key=operator.itemgetter(1),
             reverse=True)
-    sorted_neg_paths = sorted(neg_paths.iteritems(), key=operator.itemgetter(1),
+    sorted_neg_paths = sorted(iter(neg_paths.items()), key=operator.itemgetter(1),
             reverse=True)
 
     for x in range(10):
-       print "{0} : {1}".format(sorted_pos_paths[x][0], sorted_pos_paths[x][1])
-       print "-"*72
-    print
+       print("{0} : {1}".format(sorted_pos_paths[x][0], sorted_pos_paths[x][1]))
+       print("-"*72)
+    print()
     for x in range(10):
-       print "{0} : {1}".format(sorted_neg_paths[x][0], sorted_neg_paths[x][1])
-       print "-"*72
+       print("{0} : {1}".format(sorted_neg_paths[x][0], sorted_neg_paths[x][1]))
+       print("-"*72)
 
-    print "="*72
-    sorted_pairs = sorted(pos_pairs.iteritems(), key=operator.itemgetter(1),
+    print("="*72)
+    sorted_pairs = sorted(iter(pos_pairs.items()), key=operator.itemgetter(1),
             reverse=True)
     for x in range(50):
-        print "{0}".format(sorted_pairs[x])
+        print("{0}".format(sorted_pairs[x]))
 
 

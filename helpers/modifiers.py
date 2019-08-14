@@ -92,4 +92,4 @@ if __name__ == '__main__':
                 mods_list.add(mod)
 
     for m in mods_list:
-        print m
+        print(m)

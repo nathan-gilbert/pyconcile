@@ -159,7 +159,7 @@ class Nominal:
 
     def __str__(self):
         features = ""
-        for attr in self.attributes.keys():
+        for attr in list(self.attributes.keys()):
             if attr.find("_PROB") > -1:
                 features += "%s=%0.2f\n" % (attr,
                         float(self.attributes[attr](attr.replace("_PROB", ""))))
@@ -170,9 +170,9 @@ class Nominal:
                 features += "%s=%0.2f\n" % (attr, float(self.attributes[attr]))
 
         #prints out all dictionaries
-        for l in self.list_stats.keys():
+        for l in list(self.list_stats.keys()):
             tags = "{"
-            for t in self.list_stats[l].keys():
+            for t in list(self.list_stats[l].keys()):
                 tags += "%s->%d|" % (t, self.list_stats[l][t])
             tags = tags.strip()
             if tags.endswith("|"):
@@ -181,7 +181,7 @@ class Nominal:
             features += "%s=%s\n" % (l, tags)
 
         features += "TOTAL_COUNT=%d\n" % self.count
-        features += "TOTAL_DOCS=%d\n" % len(self.docs.keys())
+        features += "TOTAL_DOCS=%d\n" % len(list(self.docs.keys()))
 
         #median sentence distance
         try:
@@ -195,11 +195,11 @@ class Nominal:
         except TypeError:
             features += "MEDIAN_TILE=0\n"
 
-        features += "MEDIAN_DOC=%d\n" % (numpy.median(self.docs.values()))
+        features += "MEDIAN_DOC=%d\n" % (numpy.median(list(self.docs.values())))
         features = features.strip()
         return "TEXT:%s\n%s" % (self.text, features)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <first-argument>" % (sys.argv[0])
+        print(("Usage: %s <first-argument>" % (sys.argv[0])))
         sys.exit(1)

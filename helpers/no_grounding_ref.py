@@ -11,20 +11,20 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list>" % (sys.argv[0])
+        print("Usage: %s <file-list>" % (sys.argv[0]))
         sys.exit(1)
 
     fileList = open(sys.argv[1], 'r')
-    files = filter(lambda x : not x.startswith("#"), fileList.readlines())
+    files = [x for x in fileList.readlines() if not x.startswith("#")]
     no_grounding_refs = []
     all_nominals = []
 
     for f in files:
         f = f.strip()
-        print "Working on document: %s" % f
+        print("Working on document: %s" % f)
         gold_chains = reconcile.getGoldChains(f, True)
         #read in all the gold chains
-        for gc in gold_chains.keys():
+        for gc in list(gold_chains.keys()):
             #determine if any of the nominals are in fact in a chain with no
             #grounding reference.
             for mention in gold_chains[gc]:
@@ -43,7 +43,7 @@ if __name__ == "__main__":
         #              6. 
 
     for c in no_grounding_refs:
-        print set(map(lambda x : x.pprint(), c))
+        print(set([x.pprint() for x in c]))
 
 
     l=[]
@@ -54,4 +54,4 @@ if __name__ == "__main__":
         else:
             l.append(n.pprint())
 
-    print set(l)
+    print(set(l))

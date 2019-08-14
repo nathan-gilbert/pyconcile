@@ -99,13 +99,13 @@ if __name__ == "__main__":
     for d in duncan_pairs:
         if d[0].getText() != d[1].getText():
             if options.verbose:
-                print "Duncan Non-String Match ",
-                print d[0],d[1]
+                print("Duncan Non-String Match ", end=' ')
+                print(d[0],d[1])
             new_duncan_pairs.append(d)
         else:
             if options.verbose:
-                print "Duncan String Match ",
-                print d[0],d[1]
+                print("Duncan String Match ", end=' ')
+                print(d[0],d[1])
             if options.original:
                 new_duncan_pairs.append(d)
 
@@ -115,14 +115,14 @@ if __name__ == "__main__":
 
     #find all string matches in nps file.
     if options.verbose:
-        print
-        print "String matches added:"
+        print()
+        print("String matches added:")
 
     match_pairs=[]
     if options.strmatches:
         nps=reconcile.getNPs_props(options.directory)
         strm=all_string_matches(nps)
-        for s in strm.keys():
+        for s in list(strm.keys()):
             #if len(strm[s]) > 1 and strm[s][0][2]["text_lower"] != "who" and strm[s][0][2]["pronoun"] == "NONE":
             first=None
             for k in strm[s]:
@@ -131,7 +131,7 @@ if __name__ == "__main__":
                 else:
                     match_pairs.append((first,k))
             if options.verbose:
-                print "%s %d" % (k[2]["text"], len(strm[s]))
+                print("%s %d" % (k[2]["text"], len(strm[s])))
 
     #output new duncan file, with all old annotations plus new string match ones.
     if options.write:

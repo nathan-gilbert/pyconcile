@@ -25,7 +25,7 @@ class Mention:
         out_str = "{0}\n".format(self.count)
         #out_str += "[{0}]\n".format(", ".join(self.antecedents.keys()))
         tmp = []
-        for key in self.antecedents.keys():
+        for key in list(self.antecedents.keys()):
             avg_dist = sum(self.antecedents[key]) / float(len(self.antecedents[key]))
             #out_str += "\t{0} : {1}\n".format(key.replace("\n", " "),
             #        avg_dist)
@@ -38,7 +38,7 @@ class Mention:
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list>" % (sys.argv[0])
+        print("Usage: %s <file-list>" % (sys.argv[0]))
         sys.exit(1)
 
     files = []
@@ -54,17 +54,17 @@ if __name__ == "__main__":
         if f.startswith("#"):
             continue
 
-        print "Working on document {0}".format(f)
+        print("Working on document {0}".format(f))
         #get gold mentions
         gold_chains = reconcile.getGoldChains(f)
         d = document.Document(f)
 
-        for chain in gold_chains.keys():
+        for chain in list(gold_chains.keys()):
             prev = None
             for mention in gold_chains[chain]:
                 mention_text = mention.getText().lower()
                 if (mention_text in PRONOUNS) and (prev is not None):
-                    if mention_text not in text2mention.keys():
+                    if mention_text not in list(text2mention.keys()):
                         text2mention[mention_text] = \
                         Mention(mention_text)
                     prev_text = prev.getText().lower()
@@ -74,6 +74,6 @@ if __name__ == "__main__":
                             word_distance)
                 prev = mention
 
-    for key in text2mention.keys():
-        print "{0}".format(key)
-        print text2mention[key]
+    for key in list(text2mention.keys()):
+        print("{0}".format(key))
+        print(text2mention[key])

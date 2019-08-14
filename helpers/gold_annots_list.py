@@ -13,7 +13,7 @@ from pyconcile import utils
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list>" % (sys.argv[0])
+        print("Usage: %s <file-list>" % (sys.argv[0]))
         sys.exit(1)
 
     fList=open(sys.argv[1], 'r')
@@ -37,4 +37,4 @@ if __name__ == "__main__":
                 #gold[text] = (head, pos)
                 gold.append(text)
     for t in gold:
-        print t
+        print(t)

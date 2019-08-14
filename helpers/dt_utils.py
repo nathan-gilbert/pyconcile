@@ -27,7 +27,7 @@ def find_path(pair_features, treeLines):
             if stay_at_depth and (prev_depth != depth):
                 continue
 
-            tokens = map(string.strip, line.split())
+            tokens = list(map(string.strip, line.split()))
             feature_name = tokens[0]
             feature_operator = tokens[1]
             feature_value = tokens[2]
@@ -41,7 +41,7 @@ def find_path(pair_features, treeLines):
 
             #print "%s %s %s" % (feature_name, feature_operator, feature_value)
 
-            if feature_name in pair_features.keys():
+            if feature_name in list(pair_features.keys()):
                 #this means we have a non-zero instance
                 pair_value = float(pair_features[feature_name])
             else:
@@ -110,6 +110,6 @@ def find_path(pair_features, treeLines):
                     if terminus:
                         terminus = False
             else:
-                print "Unknown operator %s"  % feature_operator
+                print("Unknown operator %s"  % feature_operator)
             prev_depth = depth
     return path

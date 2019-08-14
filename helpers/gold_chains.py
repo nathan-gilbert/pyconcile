@@ -11,22 +11,20 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s dir" % (sys.argv[0])
+        print("Usage: %s dir" % (sys.argv[0]))
         sys.exit(1)
 
     gold_chains = reconcile.getGoldChains(sys.argv[1])
 
     if "-m" not in sys.argv:
-        for k in gold_chains.keys():
+        for k in list(gold_chains.keys()):
             #if len(gold_chains[k]) < 2:
             #    continue
-            print "{ ",
-            print "%s" % (" \n\t<- ".join(map(lambda x :
-            x.ppprint().replace("\n", " "), gold_chains[k]))),
-            print "\n}"
+            print("{ ", end=' ')
+            print("%s" % (" \n\t<- ".join([x.ppprint().replace("\n", " ") for x in gold_chains[k]])), end=' ')
+            print("\n}")
     else:
-        for k in gold_chains.keys():
-            print "{ ",
-            print "%s" % (" \n\t<- ".join(map(lambda x :
-            x.pppprint().replace("\n", " "), gold_chains[k]))),
-            print "\n}"
+        for k in list(gold_chains.keys()):
+            print("{ ", end=' ')
+            print("%s" % (" \n\t<- ".join([x.pppprint().replace("\n", " ") for x in gold_chains[k]])), end=' ')
+            print("\n}")

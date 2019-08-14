@@ -14,11 +14,11 @@ from collections import defaultdict
 import nltk
 from nltk.corpus import verbnet
 
-import data
-import utils
-import feature_utils
-from annotation import Annotation
-from annotation_set import AnnotationSet
+from . import data
+from . import utils
+from . import feature_utils
+from .annotation import Annotation
+from .annotation_set import AnnotationSet
 
 def parseGoldAnnots(dataDir, sundance=False):
     goldFile = glob.glob(dataDir + "/annotations/*_annots")
@@ -253,7 +253,7 @@ def getGoldChains(dataDir, sundance=False):
         chains[coref_id].append(a)
 
     final_chains = defaultdict(list)
-    for c in chains.keys():
+    for c in list(chains.keys()):
         final_chains[c] = sortAnnotsBySpans(chains[c])
     return final_chains
 
@@ -357,7 +357,7 @@ def getStanfordDep(datadir):
 
 def getPreviousAntecedent(anaphor, gold_chains):
     prev = Annotation(-1, -1, -1, {}, "")
-    for chain in gold_chains.keys():
+    for chain in list(gold_chains.keys()):
         for markable in gold_chains[chain]:
             if (markable.getStart() == anaphor.getStart()) and (markable.getEnd() == anaphor.getEnd()):
                 return prev
@@ -366,7 +366,7 @@ def getPreviousAntecedent(anaphor, gold_chains):
 
 def getPreviousProperAntecedent(anaphor, gold_chains):
     prev = None
-    for chain in gold_chains.keys():
+    for chain in list(gold_chains.keys()):
         for markable in gold_chains[chain]:
             if (markable.getStart() == anaphor.getStart()) and (markable.getEnd() == anaphor.getEnd()):
                 return prev
@@ -416,7 +416,7 @@ def sortBySpans(spans):
 
 def fixREFNumbers(clusters):
     """Takes a dictonary of clusters and re-arranges the REF/ID tags to be in order."""
-    for key in clusters.keys():
+    for key in list(clusters.keys()):
         prevREF = -1
         for mention in clusters[key]:
             if mention.getREF() != -1:
@@ -494,7 +494,7 @@ def getMatchedSundanceNEs(datadir):
         tokens = line.split()
         #grab all the semantic classes, not just the first one
         #which means that this is now a list instead of a string
-        ne_classes = map(lambda x : x.strip(), tokens[2].split(","))
+        ne_classes = [x.strip() for x in tokens[2].split(",")]
         a = Annotation(start, end, i, {"SUN_NE" : ne_classes}, text)
         nes.add(a)
     return nes
@@ -691,15 +691,13 @@ def getStanfordNPs(datadir):
             match = POS.search(line)
             if match:
                 pos = match.group(1).replace("[", "").replace("]","").strip()
-                pos_tuples = map(lambda x : nltk.tag.str2tuple(x),
-                        map(lambda x : x.strip(), pos.split(", ")))
+                pos_tuples = [nltk.tag.str2tuple(x) for x in [x.strip() for x in pos.split(", ")]]
                 attr["POS"] = pos_tuples
 
             match = HEADPOS.search(line)
             if match:
                 head_pos = match.group(1).replace("[","").replace("]","").strip()
-                head_pos_tuples = map(lambda x : nltk.tag.str2tuple(x),
-                        map(lambda x : x.strip(), head_pos.split(",")))
+                head_pos_tuples = [nltk.tag.str2tuple(x) for x in [x.strip() for x in head_pos.split(",")]]
                 attr["HEAD_POS"] = head_pos_tuples
 
             match = HEAD_START.search(line)
@@ -740,8 +738,7 @@ def getStanfordNPs(datadir):
                                 attr["HEAD_END"] = attr["HEAD_START"] + len(new_head)
                             elif pos_tuples[i-1][1].strip() in ("NNP" or "NNPS"):
                                 #if a proper noun, try to get the entire string
-                                new_head = ' '.join(map(lambda x : x[0],
-                                    propers))
+                                new_head = ' '.join([x[0] for x in propers])
                                 attr["HEAD_POS"] = propers
                                 attr["HEAD_START"] = text.find(new_head) + start
                                 attr["HEAD_END"] = attr["HEAD_START"] + len(new_head)
@@ -1269,10 +1266,10 @@ def getResponseChains(datadir, outputfile):
         if np.getStart() != -1 and np.getEnd() != -1:
             clusters[corefID].append(np)
         else:
-            print "NULL annot"
+            print("NULL annot")
 
     final_chains = defaultdict(list)
-    for c in clusters.keys():
+    for c in list(clusters.keys()):
         final_chains[c] = sortAnnotsBySpans(clusters[c])
     return final_chains
 
@@ -1316,7 +1313,7 @@ def getAllResponsePairs(datadir, predictions):
 def getMentionDistancePronounPairs(datadir, predictions):
     lines = []
     with open(datadir + "/" + predictions + "/pronoun.predictions") as fauxFile:
-        lines.extend(filter(lambda x : not x.startswith("#"), fauxFile.readlines()))
+        lines.extend([x for x in fauxFile.readlines() if not x.startswith("#")])
 
     nps = getNPs_annots(datadir)
     pairs = []
@@ -1334,7 +1331,7 @@ def getMentionDistancePronounPairs(datadir, predictions):
 def getFauxPairs(datadir, predictions):
     lines = []
     with open(datadir + "/" + predictions + "/faux.predictions") as fauxFile:
-        lines.extend(filter(lambda x : not x.startswith("#"), fauxFile.readlines()))
+        lines.extend([x for x in fauxFile.readlines() if not x.startswith("#")])
 
     nps = getNPs_annots(datadir)
     pairs = []
@@ -1443,7 +1440,7 @@ def labelCorrectPairs(gold_chains, response_pairs):
         ant_chain = -1
         ana_chain = -2
 
-        for key in gold_chains.keys():
+        for key in list(gold_chains.keys()):
             chain = gold_chains[key]
             for annot in chain:
                 if (antecedent == annot):
@@ -1465,7 +1462,7 @@ def isCorrectPair(gold_chains, pair):
     anaphor = pair[1]
     ant_chain = -1
     ana_chain = -2
-    for key in gold_chains.keys():
+    for key in list(gold_chains.keys()):
         chain = gold_chains[key]
         for annot in chain:
             if (antecedent == annot):
@@ -1966,8 +1963,8 @@ def getVerbs(dir):
             if verb_class != []:
                 props["class"] = verb_class[0]
                 #props["roles"] = verbnet.pprint_themeroles(verb_class[0])
-                roles = map(string.strip,
-                        verbnet.pprint_themroles(verb_class[0]).split("*"))
+                roles = list(map(string.strip,
+                        verbnet.pprint_themroles(verb_class[0]).split("*")))
                 props["roles"] = roles[1:]
             else:
                 #try it with the stemmed word
@@ -1975,8 +1972,8 @@ def getVerbs(dir):
                 if verb_class != []:
                     props["class"] = verb_class[0] + " (from stemmed)"
                     #props["roles"] = verbnet.pprint_themeroles(verb_class[0])
-                    roles = map(string.strip,
-                            verbnet.pprint_themroles(verb_class[0]).split("*"))
+                    roles = list(map(string.strip,
+                            verbnet.pprint_themroles(verb_class[0]).split("*")))
                     props["roles"] = roles[1:]
 
             verb = Annotation(start, end, num, props, text)
@@ -2083,4 +2080,4 @@ if __name__ == "__main__":
     # test some functionality of this library. 
     nps = getNPs_annots("/home/nathan/Documents/data/promed-test/44")
     for np in nps:
-        print np
+        print(np)

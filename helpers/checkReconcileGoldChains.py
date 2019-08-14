@@ -46,7 +46,7 @@ class corefHandler(ContentHandler):
         elif name == "entity_mention":
             if self.inEntity:
                 self.inMention = True
-                for key in attrs.keys():
+                for key in list(attrs.keys()):
                     self.attr[key] = attrs[key]
                 self.attr["SEMANTIC"] = "%s:%s" % (self.type, self.subtype)
                 self.attr["CLASS"] = self.cls
@@ -94,7 +94,7 @@ class corefHandler(ContentHandler):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <indir>" % (sys.argv[0])
+        print("Usage: %s <indir>" % (sys.argv[0]))
         sys.exit(1)
 
 
@@ -125,20 +125,20 @@ if __name__ == "__main__":
 
     spans = []
     ace2spans = defaultdict(list)
-    for cluster in ace_gold_chains.keys():
+    for cluster in list(ace_gold_chains.keys()):
         for mention in ace_gold_chains[cluster]:
             key = "%d:%d" % (mention.getStart(), mention.getEnd())
             spans.append(key)
             ace2spans[cluster].append(key)
 
     rec2spans = defaultdict(list)
-    for cluster in reconcile_gold_chains.keys():
+    for cluster in list(reconcile_gold_chains.keys()):
         for mention in reconcile_gold_chains[cluster]:
             key = "%d:%d" % (mention.getStart(), mention.getEnd()-1)
             rec2spans[cluster].append(key)
 
-    ace_items = ace2spans.items()
-    rec_items = rec2spans.items()
+    ace_items = list(ace2spans.items())
+    rec_items = list(rec2spans.items())
 
     for span in spans:
         ace_cluster = "-1"
@@ -154,7 +154,7 @@ if __name__ == "__main__":
                 rec_cluster = a[0]
                 break
 
-        print "%s : %s : %s" % (span, ace_cluster, rec_cluster)
+        print("%s : %s : %s" % (span, ace_cluster, rec_cluster))
 
 
 

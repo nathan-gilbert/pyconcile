@@ -11,10 +11,10 @@ import nltk
 import string
 from nltk.corpus import stopwords
 
-import reconcile
-from annotation_set import AnnotationSet
-from annotation import Annotation
-import utils
+from . import reconcile
+from .annotation_set import AnnotationSet
+from .annotation import Annotation
+from . import utils
 
 class Document:
     def __init__(self, d):
@@ -129,7 +129,7 @@ class Document:
         if len(phrase) == 0:
             return None
         else:
-            return ' '.join(map(lambda x : x.getText(), phrase))
+            return ' '.join([x.getText() for x in phrase])
 
     def getObjectVerb(self, annot):
         """
@@ -166,7 +166,7 @@ class Document:
         if obj == []:
             return None
         else:
-            return ' '.join(map(lambda x : x.getText(), obj))
+            return ' '.join([x.getText() for x in obj])
 
     def getPreceedingNoun(self, annot):
         prev_tokens = []
@@ -252,7 +252,7 @@ class Document:
         """
         Takes an annotation and returns any adjectives found inside it.
         """
-        overlap = filter(lambda x : x.getATTR("TAG").startswith("JJ"), self.pos.getOverlapping(annot))
+        overlap = [x for x in self.pos.getOverlapping(annot) if x.getATTR("TAG").startswith("JJ")]
         if len(overlap) < 1:
             return None
         else:
@@ -308,7 +308,7 @@ class Document:
     def addGoldChains(self, gc):
         self.gold_chains = gc
         annots = AnnotationSet("tmp")
-        for chain in gc.keys():
+        for chain in list(gc.keys()):
             for mention in gc[chain]:
                 annots.add(mention)
         self.gold_markables_by_span = annots.getList()
@@ -317,7 +317,7 @@ class Document:
         """returns the closest antecedent in the text. if base antecedent,
         returns None"""
         #find this mention in gold chains
-        for key in self.gold_chains.keys():
+        for key in list(self.gold_chains.keys()):
             prev = None
             for other in self.gold_chains[key]:
                 if mention == other:

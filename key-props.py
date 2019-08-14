@@ -10,7 +10,7 @@ import re
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <npProps>" % (sys.argv[0])
+        print(("Usage: %s <npProps>" % (sys.argv[0])))
         sys.exit(1)
 
     SEM = re.compile('.*NPSemanticType=\"([^"]*)\".*')
@@ -52,4 +52,4 @@ if __name__ == "__main__":
             if match:
                 text = match.group(1)
 
-            print "{0} ({1},{2})\n{3}\t{4}\t{5}".format(text, start, end, num, g, s)
+            print(("{0} ({1},{2})\n{3}\t{4}\t{5}".format(text, start, end, num, g, s)))

@@ -11,7 +11,7 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <dir> <predictions-dir>" % (sys.argv[0])
+        print("Usage: %s <dir> <predictions-dir>" % (sys.argv[0]))
         sys.exit(1)
 
     response_pairs = reconcile.getReconcileResponsePairs(sys.argv[1],
@@ -21,4 +21,4 @@ if __name__ == "__main__":
         antecedent = pair[0]
         anaphor = pair[1]
 
-        print "%s <- %s" % (antecedent.ppprint(), anaphor.ppprint())
+        print("%s <- %s" % (antecedent.ppprint(), anaphor.ppprint()))

@@ -36,11 +36,11 @@ if __name__ == "__main__":
         sys.exit(1)
 
     duncan_chains = duncan.getDuncanChains(options.in_file)
-    for c in duncan_chains.keys():
-        print "%d" % c
+    for c in list(duncan_chains.keys()):
+        print("%d" % c)
         for mention in duncan_chains[c]:
-            print "  %s" % mention.ppprint()
-        print
+            print("  %s" % mention.ppprint())
+        print()
 
 
 

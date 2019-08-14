@@ -10,9 +10,9 @@ Last Modified : Wed 01 Jun 2011 03:08:36 PM MDT
 from collections import defaultdict
 from operator import itemgetter
 
-import reconcile
-import data
-import string_match
+from . import reconcile
+from . import data
+from . import string_match
 
 def heuristic1(nps, p):
     """first person in same/prev sentence"""
@@ -148,7 +148,7 @@ def heuristic8(nps,pronouns):
             properties[text].append(n)
 
     #finding the most common proper name
-    e_sorted = sorted(entities.items(), key=itemgetter(1), reverse=True)
+    e_sorted = sorted(list(entities.items()), key=itemgetter(1), reverse=True)
     try:
         top = e_sorted[0][0]
     except:

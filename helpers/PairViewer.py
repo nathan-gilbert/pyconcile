@@ -6,7 +6,7 @@ import re
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print "Usage: %s <features-file> <npProperties-file>" % (sys.argv[0])
+        print("Usage: %s <features-file> <npProperties-file>" % (sys.argv[0]))
         sys.exit(1)
 
     NO = re.compile('.*NO=\"([^"]*)\".*')
@@ -58,6 +58,6 @@ if __name__ == "__main__":
         #print "%s : %s" % (k, nps[k])
 
     for p in pairs:
-        print "%s (%d,%d) : %s (%d,%d) : %s" % (nps[p[0]], npBytes[p[0]][0], npBytes[p[0]][1], nps[p[1]], npBytes[p[1]][0], npBytes[p[1]][1], p[2])
+        print("%s (%d,%d) : %s (%d,%d) : %s" % (nps[p[0]], npBytes[p[0]][0], npBytes[p[0]][1], nps[p[1]], npBytes[p[1]][0], npBytes[p[1]][1], p[2]))
 
 

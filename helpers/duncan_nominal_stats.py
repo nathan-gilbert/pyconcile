@@ -7,7 +7,7 @@
 # Created By : Nathan Gilbert
 #
 import sys
-import cPickle as pickle
+import pickle as pickle
 from collections import defaultdict
 
 from pyconcile import reconcile
@@ -15,7 +15,7 @@ from pyconcile import duncan
 from pyconcile.nominal import Nominal
 
 def makeNominal(ident, ft, doc, db):
-    if ident not in db.keys():
+    if ident not in list(db.keys()):
         #make the nom
         nom = Nominal()
         nom.setText(ident)
@@ -97,7 +97,7 @@ def getDuncanCorefStats(duncan_files, noun2antecedents):
         if f.startswith("#"):
             continue
 
-        print "Adding in Duncan positives from %s..." % f,
+        print("Adding in Duncan positives from %s..." % f, end=' ')
         added = 0
         #duncan_chains = duncan.getDuncanChains(f)
         #for key in duncan_chains.keys():
@@ -129,7 +129,7 @@ def getDuncanCorefStats(duncan_files, noun2antecedents):
             noun2antecedents.get(ana_text, {}).get(ant_text, 0) + 1
             added += 1
 
-        print "%d positives found" % added
+        print("%d positives found" % added)
     dFiles.close()
 
 def pickleDict(d, filename="stats.p"):
@@ -137,7 +137,7 @@ def pickleDict(d, filename="stats.p"):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <first-argument>" % (sys.argv[0])
+        print("Usage: %s <first-argument>" % (sys.argv[0]))
         sys.exit(1)
 
     noun2antecedents = defaultdict(dict)

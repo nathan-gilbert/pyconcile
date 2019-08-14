@@ -28,7 +28,7 @@ def output(pairs, heurs):
         antecedent = p[0]
         anaphor = p[1]
         byte = (antecedent[0], antecedent[1], anaphor[0], anaphor[1])
-        h = ','.join(map(lambda x : str(x), heurs[byte]))
+        h = ','.join([str(x) for x in heurs[byte]])
         outFile.write("%d\t%d,%d\t%d,%d\tpronoun_pair_H=%s\t\n" % (i, antecedent[0], antecedent[1], anaphor[0], anaphor[1], h))
         i += 1
     outFile.close()
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     if options.stats:
         options.evaluate = False
         options.verbose = False
-    print
+    print()
 
     if options.all:
         options.heuristics = 8
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     #heuristic 1
     if options.heuristics > 0 or (options.only == 1):
         if options.vverbose:
-            print "Running Heuristic 1...",
+            print("Running Heuristic 1...", end=' ')
 
         pairs1 = []
         for p in pronouns:
@@ -124,15 +124,15 @@ if __name__ == "__main__":
 
             pairs1.extend(pronoun_heuristics.heuristic1(prev_nps, p))
 
-        pairs1 = filter(lambda x : x != [], pairs1)
+        pairs1 = [x for x in pairs1 if x != []]
         if options.vverbose:
-            print "%d resolutions" % len(pairs1)
+            print("%d resolutions" % len(pairs1))
         all_pairs.extend(pairs1)
 
     #heuristic 2
     if options.heuristics > 1 or (options.only == 2):
         if options.vverbose:
-            print "Running Heuristic 2...",
+            print("Running Heuristic 2...", end=' ')
 
         pairs2 = []
         for p in possessive_pronouns:
@@ -140,16 +140,16 @@ if __name__ == "__main__":
             prev_nps = reconcile.sent2nps(reconcile.prev_sent(sents, p), nps) + reconcile.sent2nps_prev(sents, nps, p)
             pairs2.extend(pronoun_heuristics.heuristic2(prev_nps, p))
 
-        pairs2 = filter(lambda x : x != [], pairs2)
+        pairs2 = [x for x in pairs2 if x != []]
 
         if options.vverbose:
-            print "%d resolutions" % len(pairs2)
+            print("%d resolutions" % len(pairs2))
         all_pairs.extend(pairs2)
 
     #heuristic 3
     if options.heuristics > 2 or options.only == 3:
         if options.vverbose:
-            print "Running Heuristic 3...",
+            print("Running Heuristic 3...", end=' ')
 
         pairs3 = []
         for p in pronouns:
@@ -159,74 +159,74 @@ if __name__ == "__main__":
                     and p.getATTR("in_quote"):
                 pairs3.extend(pronoun_heuristics.heuristic3(allLines, nps, p))
 
-        pairs3 = filter(lambda x : x != [], pairs3)
+        pairs3 = [x for x in pairs3 if x != []]
         if options.vverbose:
-            print "%d resolutions" % len(pairs3)
+            print("%d resolutions" % len(pairs3))
         all_pairs.extend(pairs3)
 
     #heuristic 4
     if options.heuristics > 3 or options.only == 4:
         if options.vverbose:
-            print "Running Heuristic 4...",
+            print("Running Heuristic 4...", end=' ')
 
         pairs4 = pronoun_heuristics.heuristic4(nps, possessive_pronouns)
-        pairs4 = filter(lambda x : x != [], pairs4)
+        pairs4 = [x for x in pairs4 if x != []]
         if options.vverbose:
-            print "%d resolutions" % len(pairs4)
+            print("%d resolutions" % len(pairs4))
 
         all_pairs.extend(pairs4)
 
     #heuristic 5
     if options.heuristics > 4 or options.only == 5:
         if options.vverbose:
-            print "Running Heuristic 5...",
+            print("Running Heuristic 5...", end=' ')
 
         pairs5 = pronoun_heuristics.heuristic5(sents, pronouns)
-        pairs5 = filter(lambda x : x != [], pairs5)
+        pairs5 = [x for x in pairs5 if x != []]
 
         if options.vverbose:
-            print "%d resolutions" % len(pairs5)
+            print("%d resolutions" % len(pairs5))
 
         all_pairs.extend(pairs5)
 
     #heuristic 6 
     if options.heuristics > 5 or (options.only == 6):
         if options.vverbose:
-            print "Running Heuristic 6...",
+            print("Running Heuristic 6...", end=' ')
         pairs6 = []
         for p in pronouns:
             counts[p.getATTR("text_lower")] = counts.get(p.getATTR("text_lower"), 0) + 1
             prev_nps = reconcile.sent2nps(reconcile.prev_sent(sents, p), nps) + reconcile.sent2nps_prev(sents, nps, p)
             pairs6.extend(pronoun_heuristics.heuristic6(prev_nps, p))
-        pairs6 = filter(lambda x : x != [], pairs6)
+        pairs6 = [x for x in pairs6 if x != []]
         if options.vverbose:
-            print "%d resolutions" % len(pairs6)
+            print("%d resolutions" % len(pairs6))
         all_pairs.extend(pairs6)
 
     #heuristic 7
     if options.heuristics > 6 or (options.only == 7):
         if options.vverbose:
-            print "Running Heuristic 7...",
+            print("Running Heuristic 7...", end=' ')
         pairs7 = []
         for p in possessive_pronouns:
             counts[p.getATTR("text_lower")] = counts.get(p.getATTR("text_lower"), 0) + 1
             prev_nps = reconcile.sent2nps(reconcile.prev_sent(sents, p), nps) + reconcile.sent2nps_prev(sents, nps, p)
             pairs7.extend(pronoun_heuristics.heuristic7(prev_nps, p))
-        pairs7 = filter(lambda x : x != [], pairs7)
+        pairs7 = [x for x in pairs7 if x != []]
         if options.vverbose:
-            print "%d resolutions" % len(pairs7)
+            print("%d resolutions" % len(pairs7))
         all_pairs.extend(pairs7)
 
     #heuristic 8
     if options.heuristics > 7 or (options.only == 8):
         if options.vverbose:
-            print "Running Heuristic 8...",
+            print("Running Heuristic 8...", end=' ')
         pairs8 = []
         pairs8 = pronoun_heuristics.heuristic8(nps, pronouns)
 
-        pairs8 = filter(lambda x : x != [], pairs8)
+        pairs8 = [x for x in pairs8 if x != []]
         if options.vverbose:
-            print "%d resolutions" % len(pairs8)
+            print("%d resolutions" % len(pairs8))
         all_pairs.extend(pairs8)
     all_pairs = utils.flatten(all_pairs)
 
@@ -243,9 +243,9 @@ if __name__ == "__main__":
                 heurs[byte].append(h)
 
         if options.vverbose:
-            print "==================="
-            print "Resolutions:"
-            print "==================="
+            print("===================")
+            print("Resolutions:")
+            print("===================")
 
         for p in all_pairs:
             if len(p) < 1:
@@ -254,7 +254,7 @@ if __name__ == "__main__":
             anaphor = p[1]
             byte = (antecedent.getStart(), antecedent.getEnd(),
                     anaphor.getStart(), anaphor.getEnd())
-            h = ','.join(map(lambda x : str(x), heurs[byte]))
+            h = ','.join([str(x) for x in heurs[byte]])
             attrs1 = "sem=%s, gen=%s, num=%s" % (antecedent.getATTR("semantic"),
                     antecedent.getATTR("gender"),
                     antecedent.getATTR("number"))
@@ -263,22 +263,22 @@ if __name__ == "__main__":
                     anaphor.getATTR("number"))
             if byte not in tmp:
                 tmp.append(byte)
-                print "%s [%s] <- %s [%s] (H:%s)" % (antecedent.ppprint(), 
-                        attrs1, anaphor.ppprint(), attrs2, h)
+                print("%s [%s] <- %s [%s] (H:%s)" % (antecedent.ppprint(), 
+                        attrs1, anaphor.ppprint(), attrs2, h))
 
         if options.vverbose:
-            print "==================="
+            print("===================")
 
     if options.evaluate:
         GoldChains = reconcile.getGoldChains(options.directory)
         s = score.accuracy(GoldChains, all_pairs)
-        print "Document Score:"
-        print "  Accuracy: %0.2f with %d Correct, %d Incorrect" % (s[0], s[1], s[2])
+        print("Document Score:")
+        print("  Accuracy: %0.2f with %d Correct, %d Incorrect" % (s[0], s[1], s[2]))
 
     if options.stats:
         GoldChains = reconcile.getGoldChains(options.directory)
         s = score.accuracy(GoldChains, all_pairs)
-        print "%d %d %d" % (s[1], s[2], s[3])
+        print("%d %d %d" % (s[1], s[2], s[3]))
 
     if options.write:
         heurs = defaultdict(list)
@@ -299,7 +299,7 @@ if __name__ == "__main__":
         output(UniquePairs, heurs)
 
     if options.counts:
-        print "Total pronouns"
+        print("Total pronouns")
         for c in counts:
-            print "%s : %d" % (c, counts[c])
+            print("%s : %d" % (c, counts[c]))
 

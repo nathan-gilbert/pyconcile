@@ -110,4 +110,4 @@ if __name__ == "__main__":
 
     for ne1 in muc4_nes:
         for ne2 in muc4_nes:
-            print "%s:%s" % (ne1, ne2)
+            print("%s:%s" % (ne1, ne2))

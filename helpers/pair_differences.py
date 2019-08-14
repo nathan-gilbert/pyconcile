@@ -12,7 +12,7 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist>" % (sys.argv[0])
+        print("Usage: %s <filelist>" % (sys.argv[0]))
         sys.exit(1)
 
     #base = "goldnps"
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         if f.startswith("#"):
             continue
         f=f.strip()
-        print "Working on doc: {0}".format(f)
+        print("Working on doc: {0}".format(f))
         response1 = reconcile.getAllResponsePairs(f, "/features." + base + "/" + predictions1)
         system1_pairs = {}
         system2_pairs = {}
@@ -66,6 +66,6 @@ if __name__ == "__main__":
         total_diff2 += diff2
         total_overlap += len(list(set1 & set2))
 
-    print "Total diff 1: {0}".format(total_diff1)
-    print "Total diff 2: {0}".format(total_diff2)
-    print "Total diff overlap: {0}".format(total_overlap)
+    print("Total diff 1: {0}".format(total_diff1))
+    print("Total diff 2: {0}".format(total_diff2))
+    print("Total diff overlap: {0}".format(total_overlap))

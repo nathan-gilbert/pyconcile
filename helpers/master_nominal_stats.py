@@ -10,7 +10,7 @@ import string
 #from collections import Counter #not available in python 2.6.5
 from collections import defaultdict
 from optparse import OptionParser
-import cPickle as pickle
+import pickle as pickle
 
 from pyconcile import reconcile
 from pyconcile.annotation import Annotation
@@ -46,24 +46,24 @@ VERBOSE = False
 HEADS_ONLY = False
 
 def output_to_human(db):
-    for nom in db.keys():
-        print db[nom]
+    for nom in list(db.keys()):
+        print(db[nom])
 
 def output_to_file(filename, db):
     """Outputs statistics to a file """
     outfile = open(filename, 'w')
-    for nom in db.keys():
+    for nom in list(db.keys()):
         outfile.write("%s\n" % (db[nom]))
         outfile.write("$!$\n")
     outfile.close()
 
 def incrementDict(feature, ident, db):
     """Increments the given feature in the db by 1"""
-    if ident in db.keys():
+    if ident in list(db.keys()):
         db[ident].increment(feature)
 
 def incrementCount(ident, db):
-    if ident in db.keys():
+    if ident in list(db.keys()):
         db[ident].incrementCount()
 
 #def updatePrevTag(ident, tag, db):
@@ -77,21 +77,21 @@ def incrementCount(ident, db):
 #            db[ident].sentence_distance.append(distance)
 
 def updateLocationInDoc(ident, percentile_loc, db):
-    if ident in db.keys():
+    if ident in list(db.keys()):
         db[ident].doc_location.append(percentile_loc)
 
 def updateTile(ident, prev, current, db):
     if prev > -1 and current > -1:
-        if ident in db.keys():
+        if ident in list(db.keys()):
             db[ident].text_tile_distance.append(current - prev)
 
 def updateAnteType(ident, prev, db):
     if prev != "":
-        if ident in db.keys():
+        if ident in list(db.keys()):
             db[ident].updateAnteType(prev)
 
 def makeNominal(ident, ft, doc, db):
-    if ident not in db.keys():
+    if ident not in list(db.keys()):
         #make the nom
         nom = Nominal()
         nom.setText(ident)
@@ -109,9 +109,9 @@ def getMostCommonAntecedent(antecedents):
 
     #all the strings in the antecedents
     if HEADS_ONLY:
-        strings = map(lambda x : x.getATTR("HEAD_TEXT").lower(), antecedents)
+        strings = [x.getATTR("HEAD_TEXT").lower() for x in antecedents]
     else:
-        strings = map(lambda x : x.getATTR("TEXT_CLEAN").lower(), antecedents)
+        strings = [x.getATTR("TEXT_CLEAN").lower() for x in antecedents]
     #most_common returns a list of tuples, grabbing first one
     #c = Counter(strings) #had to reimplement for python 2.6.5
     #most_common_antecedent = c.most_common(1)[0]
@@ -184,11 +184,11 @@ if __name__ == "__main__":
 
     fileList = open(options.filelist, 'r')
     #lines that start with # are ignored
-    files = filter(lambda x : not x.startswith("#"), fileList.readlines())
+    files = [x for x in fileList.readlines() if not x.startswith("#")]
     fileList.close()
     for f in files:
         f = f.strip()
-        print "Working on document: %s" % f
+        print("Working on document: %s" % f)
 
         #load in the document statistics
         d = Document(f)
@@ -201,7 +201,7 @@ if __name__ == "__main__":
         gold_chains = reconcile.getGoldChains(f, True)
         d.addGoldChains(gold_chains)
 
-        for gc in gold_chains.keys():
+        for gc in list(gold_chains.keys()):
             base_antecedent = True
             previous_semantic_tag = ""
             prev_sent = -1
@@ -218,7 +218,7 @@ if __name__ == "__main__":
                     text_ident = mention.getATTR("TEXT_CLEAN").lower()
 
                 if text_ident == "":
-                    print "NULL Text: %s (%s)" % (mention.getText(), f)
+                    print("NULL Text: %s (%s)" % (mention.getText(), f))
 
                 if mention.getATTR("is_nominal") or \
                 mention.getATTR("is_proper") or mention.getATTR("is_pronoun"):
@@ -257,7 +257,7 @@ if __name__ == "__main__":
                         mention_sent = reconcile.getAnnotSentenceNum(f, mention)
                         if VERBOSE:
                             if mention_sent == -1:
-                                print "%s sentence not found" % (text_ident)
+                                print("%s sentence not found" % (text_ident))
 
                         if mention_sent > -1 and prev_sent > -1:
                             dist = mention_sent - prev_sent
@@ -265,8 +265,8 @@ if __name__ == "__main__":
 
                             if VERBOSE:
                                 if dist < 0:
-                                    print "Distance less than 0, current: %d \
-                                    prev: %d" % (mention_sent, prev_sent)
+                                    print("Distance less than 0, current: %d \
+                                    prev: %d" % (mention_sent, prev_sent))
 
                         #where in the doc does this mention occur
                         percentile_loc = float(mention_sent) / total_sentences_doc

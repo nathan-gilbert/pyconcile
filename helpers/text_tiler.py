@@ -19,7 +19,7 @@ from pyconcile.annotation import Annotation
 # the tendency is to lump everything in one tile.
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist>" % (sys.argv[0])
+        print("Usage: %s <filelist>" % (sys.argv[0]))
         sys.exit(1)
 
     files=[]

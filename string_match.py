@@ -129,7 +129,7 @@ def isAcronym(text1, text2):
     text2_nodets = remove_determiners(text2)
 
     tokens1 = text1.split()
-    new_text = ''.join(map(lambda x : x[0], tokens1))
+    new_text = ''.join([x[0] for x in tokens1])
 
     if new_text == text2:
         return True
@@ -175,6 +175,6 @@ def guantlet(text1, text2):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <first-argument>" % (sys.argv[0])
+        print(("Usage: %s <first-argument>" % (sys.argv[0])))
         sys.exit(1)
 

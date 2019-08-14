@@ -30,13 +30,12 @@ if __name__ == "__main__":
 
     files = []
     with open(options.filelist, 'r') as fileList:
-        files.extend(filter(lambda x : not x.startswith("#"), map(lambda x :
-            x.strip(), fileList.readlines())))
+        files.extend([x for x in [x.strip() for x in fileList.readlines()] if not x.startswith("#")])
 
     total_new_correct_resolutions = 0
     total_new_incorrect_resolutions = 0
     for f in files:
-        print "File: {0}".format(f)
+        print("File: {0}".format(f))
         response1 = reconcile.getAllResponsePairs(f, "/features." + base + "/" + predictions1)
         response2 = reconcile.getAllResponsePairs(f, "/features." + second+"/" + predictions2)
 
@@ -91,13 +90,13 @@ if __name__ == "__main__":
         total_new_correct_resolutions += len(correct)
         total_new_incorrect_resolutions += len(incorrect)
         for c in correct:
-            print c
+            print(c)
         for i in incorrect:
-            print i
+            print(i)
 
     total_new_resolutions = total_new_incorrect_resolutions + total_new_correct_resolutions
-    print "New resolutions: {0}".format(total_new_resolutions)
-    print "Correct: {0} / {1} = {2:.2f}".format(total_new_correct_resolutions,
-            total_new_resolutions, float(total_new_correct_resolutions) / total_new_resolutions)
-    print "Incorrect: {0} / {1} = {2:.2f}".format(total_new_incorrect_resolutions,
-            total_new_resolutions, float(total_new_incorrect_resolutions) / total_new_resolutions)
+    print("New resolutions: {0}".format(total_new_resolutions))
+    print("Correct: {0} / {1} = {2:.2f}".format(total_new_correct_resolutions,
+            total_new_resolutions, float(total_new_correct_resolutions) / total_new_resolutions))
+    print("Incorrect: {0} / {1} = {2:.2f}".format(total_new_incorrect_resolutions,
+            total_new_resolutions, float(total_new_incorrect_resolutions) / total_new_resolutions))

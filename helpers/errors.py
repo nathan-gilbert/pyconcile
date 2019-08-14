@@ -37,7 +37,7 @@ if __name__ == "__main__":
         gold_chains = reconcile.getGoldChains(options.directory)
         duncan_pairs = duncan.getDuncanPairs(options.directory)
         accuracy = score.accuracy(gold_chains, duncan_pairs)
-        print "A: %d/%d = %0.2f" % (accuracy[0], accuracy[1], accuracy[2])
+        print("A: %d/%d = %0.2f" % (accuracy[0], accuracy[1], accuracy[2]))
     elif options.filelist is not None:
         filelist = open(options.filelist, 'r')
         total = [0, 0]
@@ -50,7 +50,7 @@ if __name__ == "__main__":
             gold_chains = reconcile.getGoldChains(f)
             duncan_pairs = duncan.getDuncanPairs(f)
             accuracy = score.accuracy(gold_chains, duncan_pairs)
-            print "Doc %s A: %d/%d = %0.2f" % (f, accuracy[0], accuracy[1], accuracy[2])
+            print("Doc %s A: %d/%d = %0.2f" % (f, accuracy[0], accuracy[1], accuracy[2]))
             total[0] += accuracy[0]
             total[1] += accuracy[1]
 
@@ -64,13 +64,13 @@ if __name__ == "__main__":
                 if score.correctpair(gold_chains, antecedent, anaphor):
                     h_stats_correct[h] = h_stats_correct.get(h, 0) + 1
 
-        print "Total A: %d/%d = %0.2f" % (total[0], total[1],
-                float(total[0])/total[1])
+        print("Total A: %d/%d = %0.2f" % (total[0], total[1],
+                float(total[0])/total[1]))
 
-        print "Heuristic break down"
-        keys = set(h_stats_correct.keys() + h_stats_total.keys())
+        print("Heuristic break down")
+        keys = set(list(h_stats_correct.keys()) + list(h_stats_total.keys()))
         for k in keys:
             correct = h_stats_correct.get(k, 0)
             incorrect = h_stats_total.get(k, 0)
-            print "%s: %d/%d %0.2f" % (k, correct, incorrect,
-                    float(correct)/incorrect)
+            print("%s: %d/%d %0.2f" % (k, correct, incorrect,
+                    float(correct)/incorrect))

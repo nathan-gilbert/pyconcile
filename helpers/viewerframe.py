@@ -78,7 +78,7 @@ class ViewerFrame(wx.Frame):
                 self.response_dir)
 
         out = ""
-        for chain in self.response_chains.keys():
+        for chain in list(self.response_chains.keys()):
             if len(self.response_chains[chain]) > 1:
                 out += "-"*100 + "\n"
                 for mention in self.response_chains[chain]:
@@ -88,7 +88,7 @@ class ViewerFrame(wx.Frame):
 
 
         out = ""
-        for chain in self.gold_chains.keys():
+        for chain in list(self.gold_chains.keys()):
             if len(self.gold_chains[chain]) > 1:
                 out += "-"*100 + "\n"
                 for mention in self.gold_chains[chain]:

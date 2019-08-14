@@ -15,7 +15,7 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <test-files> <lexical_stats>" % (sys.argv[0])
+        print("Usage: %s <test-files> <lexical_stats>" % (sys.argv[0]))
         sys.exit(1)
 
     #read in lexical stats
@@ -50,11 +50,11 @@ if __name__ == "__main__":
                 found_response+=1
     test_docs.close()
 
-    print "Found: %d/%d (%0.2f) from stats" % (found_gold, len(commons),
-            float(found_gold)/len(commons))
-    print "Found %d/%d (%0.2f) from gold" % (found_gold, total_gold_nps,
-            float(found_gold)/total_gold_nps)
-    print "Found %d/%d (%0.2f) from response" % (found_response, total_response_nps,
-            float(found_response)/total_response_nps)
+    print("Found: %d/%d (%0.2f) from stats" % (found_gold, len(commons),
+            float(found_gold)/len(commons)))
+    print("Found %d/%d (%0.2f) from gold" % (found_gold, total_gold_nps,
+            float(found_gold)/total_gold_nps))
+    print("Found %d/%d (%0.2f) from response" % (found_response, total_response_nps,
+            float(found_response)/total_response_nps))
 
 

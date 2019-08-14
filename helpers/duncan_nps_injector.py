@@ -15,7 +15,7 @@ from pyconcile import annotation_writer
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <nps_list> <file_list>" % (sys.argv[0])
+        print("Usage: %s <nps_list> <file_list>" % (sys.argv[0]))
         sys.exit(1)
 
     nps = []
@@ -65,13 +65,13 @@ if __name__ == "__main__":
                     #create the annotation
                     new_np = Annotation(start, end, reconcile_nps.getNextID(),
                             {}, origTxt[start:end])
-                    print "Adding new np: {0}".format(new_np.pprint())
+                    print("Adding new np: {0}".format(new_np.pprint()))
                     total_nps_added += 1
                     reconcile_nps.add(new_np)
         annotation_writer.write_annotations(f+"/annotations", reconcile_nps,
                 "nps")
 
-    print "Total new nps: {0}".format(total_nps_added)
+    print("Total new nps: {0}".format(total_nps_added))
     #for np in reconcile_nps:
     #    print np.pprint()
 

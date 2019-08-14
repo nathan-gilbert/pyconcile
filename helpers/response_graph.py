@@ -12,7 +12,7 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <response-file>" % (sys.argv[0])
+        print("Usage: %s <response-file>" % (sys.argv[0]))
         sys.exit(1)
 
     dataDir = sys.argv[1][:sys.argv[1].find("/")]
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     #NOTE: as long as we are working with gold mentions, the response and gold
     #will match. otherwise, will need to switch over to gold nps to see proper
     #'misses'
-    for key in response_chains.keys():
+    for key in list(response_chains.keys()):
         chain = response_chains[key]
         #prev_mention = None
         #prev_txt = ""
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     i = 0
     for s in sentences:
         subg = pydot.Subgraph('', rank='same')
-        for key in response_chains.keys():
+        for key in list(response_chains.keys()):
             chain = response_chains[key]
             for mention in chain:
                 if s.contains(mention):

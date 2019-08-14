@@ -26,12 +26,12 @@ class ProgressBar:
     def animate(self, secs):
         for i in range(secs):
             if on_windows:
-                print self, '\r',
+                print(self, '\r', end=' ')
             else:
-                print self, chr(27) + '[A'
+                print(self, chr(27) + '[A')
             self.update_time(i + 1)
             time.sleep(1)
-        print self
+        print(self)
 
     def update_time(self, elapsed_secs):
         self.__update_amount((elapsed_secs / float(self.duration)) * 100.0)
@@ -58,28 +58,28 @@ if __name__ == '__main__':
 
     p = ProgressBar(60)
     p.update_time(15)
-    print '\nstatic progress bar:'
-    print p
+    print('\nstatic progress bar:')
+    print(p)
     # print a static progress bar
     #  [=================83%============      ]  25s/30s
 
     p = ProgressBar(30)
     p.fill_char = '='
     p.update_time(25)
-    print '\nstatic progress bar:'
-    print p
+    print('\nstatic progress bar:')
+    print(p)
     # print a dynamic updating progress bar on one line:
     #
     #  [################100%##################]  10s/10s
     #  done
     secs = 10
     p = ProgressBar(secs)
-    print '\n\ndynamic updating progress bar:'
-    print '\nplease wait %d seconds...\n' % secs
+    print('\n\ndynamic updating progress bar:')
+    print('\nplease wait %d seconds...\n' % secs)
     # spawn asych (threads/processes/etc) code here that runs for secs.
     # the call to .animate() blocks the main thread.
     p.animate(secs)
-    print 'done'
+    print('done')
 
 """
 example output:

@@ -9,8 +9,8 @@ import sys
 
 from nltk.corpus import wordnet as wn
 
-import string_match
-import data
+from . import string_match
+from . import data
 
 def getPairs(nps):
     """ list(Annotations) -> list(tuples(Annotations), "non_exact_heads") """
@@ -92,7 +92,7 @@ def getPairs(nps):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <first-argument>" % (sys.argv[0])
+        print(("Usage: %s <first-argument>" % (sys.argv[0])))
         sys.exit(1)
 
 

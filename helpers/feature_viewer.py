@@ -14,19 +14,19 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <dir> <features.dir>" % (sys.argv[0])
+        print("Usage: %s <dir> <features.dir>" % (sys.argv[0]))
         sys.exit(1)
 
     #read in features.arff file
     featuresFile = open(sys.argv[1]+"/"+sys.argv[2]+"/features.arff", 'r')
     allLines = featuresFile.readlines()
-    featureLines = filter(lambda x : x.startswith("@ATTRIBUTE"), allLines)
-    dataLines = filter(lambda x : not x.startswith("@"), allLines)
+    featureLines = [x for x in allLines if x.startswith("@ATTRIBUTE")]
+    dataLines = [x for x in allLines if not x.startswith("@")]
 
     features_names = []
     for line in featureLines:
         line = line.replace("@ATTRIBUTE","").strip()
-        tokens = map(string.strip, line.split("\t"))
+        tokens = list(map(string.strip, line.split("\t")))
         features_names.append(tokens[0])
 
 
@@ -49,15 +49,15 @@ if __name__ == "__main__":
 
     nps = reconcile.getNPs_annots(sys.argv[1])
 
-    for k in features.keys():
-        ids = map(int, k.split(","))
+    for k in list(features.keys()):
+        ids = list(map(int, k.split(",")))
         ante = nps.getAnnotByID(ids[0])
         ana = nps.getAnnotByID(ids[1])
 
         f= ' '.join(["%s=%s" % (kk, features[k][kk]) for kk in \
             sorted(features[k].keys())])
 
-        print "%s <- %s %s" % (ante.pprint(), ana.pprint(), f)
+        print("%s <- %s %s" % (ante.pprint(), ana.pprint(), f))
 
         #if features[k]["class"] == "+":
         #    print "%s <- %s" % (ante.pprint(), ana.pprint())

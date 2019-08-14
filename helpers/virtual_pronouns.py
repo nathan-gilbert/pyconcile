@@ -84,7 +84,7 @@ subj_verbs = defaultdict(list)               # the collection of verbs this
 obj_verbs = defaultdict(list)                # the collection of verbs this
                                              # nominal shares a dobj role with.
 def add_reconcile_semantic_class(gold_chains, nes):
-    for key in gold_chains.keys():
+    for key in list(gold_chains.keys()):
         for mention in gold_chains[key]:
             if nes.contains(mention):
                 cls = nes.getAnnotBySpan(mention.getStart(), \
@@ -100,7 +100,7 @@ def add_reconcile_semantic_class(gold_chains, nes):
 def add_sundance_nps(chains, sun_nps):
     """add in sundance info to the supplied chains."""
 
-    for key in chains.keys():
+    for key in list(chains.keys()):
         for mention in chains[key]:
             subset = sun_nps.getSubset(mention.getStart(), mention.getEnd())
 
@@ -158,7 +158,7 @@ def gold_annotations(f):
     original_text = defaultdict(list)   # for getting total doc counts later.
     nominal2chains = defaultdict(list)  # the chains that a given nominal appears.
 
-    for chain in gold_chains.keys():
+    for chain in list(gold_chains.keys()):
         base_antecedent = True
         prev_annot = None
         antecedents = 0
@@ -278,12 +278,12 @@ def gold_annotations(f):
     #            doc)
 
     #update the total counts.
-    for key in original_text.keys():
+    for key in list(original_text.keys()):
         for text in list(set(original_text[key])):
             total_counts[key] = total_counts.get(key, 0) + doc.getWordCounts(text)
 
     #the head counts
-    for key in virtual_pronoun_heads.keys():
+    for key in list(virtual_pronoun_heads.keys()):
         total_counts_heads[key] = total_counts_heads.get(key, 0) + \
         doc.getWordCounts(key)
 
@@ -312,7 +312,7 @@ if __name__ == "__main__":
     fileList.close()
     processed = 0
     for line in files:
-        print line
+        print(line)
 
         if options.verbose:
             prog = ProgressBar(len(files))
@@ -335,7 +335,7 @@ if __name__ == "__main__":
         sys.stdout.write("\r \r\n")
 
     outFile = open("ace-stats", 'w')
-    for key in virtual_pronouns.keys():
+    for key in list(virtual_pronouns.keys()):
         #the average distance between mention and antecedent in sentences.
         try:
             avg_distance = \
@@ -403,7 +403,7 @@ if __name__ == "__main__":
             gold_semantic_classes, subj, obj, sun_semantic_classes))
 
         #print "%3d : %3d : %3d : %1.2f : %1.2f : %1.2f : %3d : %1.2f : %1.2f : %1.2f : %1.2f : %1.2f : %1.2f : %s" % \
-        print "%s : %3d : %3d : %3d : %1.2f : %1.2f : %1.2f : %3d : %1.2f : %1.2f : %1.2f : %1.2f : %1.2f : %1.2f" % \
+        print("%s : %3d : %3d : %3d : %1.2f : %1.2f : %1.2f : %3d : %1.2f : %1.2f : %1.2f : %1.2f : %1.2f : %1.2f" % \
             (key, \
             virtual_pronouns[key], \
             nominal_base_antecedent.get(key,0), \
@@ -420,5 +420,5 @@ if __name__ == "__main__":
             avg_seg_distance,
             avg_ants
             #key
-            )
+            ))
     outFile.close()

@@ -8,8 +8,8 @@
 import sys
 from collections import defaultdict
 
-import data
-import string_match
+from . import data
+from . import string_match
 
 def getPreNouns(nps, verbs):
     """Returns a dictionary of np,v pairs -> {v1 : [np1,np2...], ... }  """
@@ -57,19 +57,19 @@ def getPairs(nps, verbs):
 
     pairs = []
     pre = getPreNouns(nps, verbs)
-    for v in pre.keys():
+    for v in list(pre.keys()):
         if len(pre[v]) > 1:
             #print "%s : %s" % (v, ' '.join(map(lambda x : x.getText(),
             #    pre[v])))
-            all_pairs = [(pre[v][x],pre[v][y],"same-verb") for y in xrange(len(pre[v])) \
-                    for x in xrange(y,len(pre[v])) if x!=y]
+            all_pairs = [(pre[v][x],pre[v][y],"same-verb") for y in range(len(pre[v])) \
+                    for x in range(y,len(pre[v])) if x!=y]
             all_pairs = fix_order(all_pairs)
             pairs.extend(all_pairs)
     return pairs
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <first-argument>" % (sys.argv[0])
+        print(("Usage: %s <first-argument>" % (sys.argv[0])))
         sys.exit(1)
 
 

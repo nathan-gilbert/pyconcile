@@ -17,7 +17,7 @@ from pyconcile import entity
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s filelist" % (sys.argv[0])
+        print("Usage: %s filelist" % (sys.argv[0]))
         sys.exit(1)
 
     fileList = open(sys.argv[1], 'r')
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         if f.startswith("#"):
             continue
         
-        print "Working on %s" % f
+        print("Working on %s" % f)
 
         gold_annots = reconcile.parseGoldAnnots(f)
         gold_chains = reconcile.getGoldChains(f)
@@ -86,15 +86,15 @@ if __name__ == "__main__":
         ana_ent[head].append(a)
         ana_head_counts[head] = ana_head_counts.get(head, 0) + 1
     
-    heads_sorted = sorted(ana_head_counts.iteritems(), key=itemgetter(1), reverse=True)
+    heads_sorted = sorted(iter(ana_head_counts.items()), key=itemgetter(1), reverse=True)
     
     x = 0 
     for h in heads_sorted:
         if x > 25:
             break
         head = h[0]
-        print
-        print "Nominal: %s" % head
+        print()
+        print("Nominal: %s" % head)
         output = ""
         output += "Count: %d" % ana_head_counts[head]
         s_verbs = "SUBJ:"
@@ -125,5 +125,5 @@ if __name__ == "__main__":
         if modifiers != "MODS:":
             output += "\n\t" + modifiers
             
-        print output
+        print(output)
         x += 1

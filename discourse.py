@@ -9,8 +9,8 @@
 import sys
 import nltk
 
-import reconcile
-from document import Document
+from . import reconcile
+from .document import Document
 
 #TODO from Allen pg. 507 
 def sentence_segment(sent):
@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     tokens = texttiles(rawTxt)
     for t in tokens:
-        print "============="
-        print t.strip()
-        print "============="
+        print("=============")
+        print((t.strip()))
+        print("=============")
 

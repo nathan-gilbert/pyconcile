@@ -8,7 +8,7 @@
 #  1. All annotations are stored as ordered list, ordered by span in the
 #  document they are drawn from.
 #
-from annotation import Annotation
+from .annotation import Annotation
 
 class AnnotationSet:
     def __init__(self, n):
@@ -185,7 +185,7 @@ class AnnotationSet:
         """Add props to the nps with the given span"""
         for a in self.container:
             if start == a.getStart() and end == a.getEnd():
-                for p in props.keys():
+                for p in list(props.keys()):
                     a.setProp(p, props[p])
 
     def intersection(self, oset):

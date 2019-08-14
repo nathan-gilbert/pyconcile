@@ -90,11 +90,11 @@ def get_doc_types(txt):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <indir> <filelist>" % (sys.argv[0])
+        print("Usage: %s <indir> <filelist>" % (sys.argv[0]))
         sys.exit(1)
 
     with open(sys.argv[2], 'r') as file_list:
-        files = map(string.strip, file_list.readlines())
+        files = list(map(string.strip, file_list.readlines()))
 
     total_coref_chains = 0       #total # of chains
     total_gold_markables = 0     #sum chain_length
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     fdir = "features.goldnps"
     prog = ProgressBar(len(files))
 
-    print "Processing documents..."
+    print("Processing documents...")
     for f in files:
         d+=1
         #progress bar updates
@@ -143,7 +143,7 @@ if __name__ == "__main__":
         sys.stdout.flush()
         #print "Processing document %d/%d" % (d, len(files))
         gold_chains = reconcile.getGoldChains(sys.argv[1]+"/"+f)
-        total_coref_chains += len(gold_chains.keys())
+        total_coref_chains += len(list(gold_chains.keys()))
 
         with open(sys.argv[1]+"/"+f+"/raw.txt", 'r') as raw_txt_file:
             raw_txt = ''.join(raw_txt_file.readlines())
@@ -152,7 +152,7 @@ if __name__ == "__main__":
         nes = reconcile.getNEs(sys.argv[1]+"/"+f)
         sun_nes = reconcile.getSundanceNEs(sys.argv[1]+"/"+f)
         features = feature_utils.getFeatures(sys.argv[1]+"/"+f, fdir)
-        total_feature_pairs += len(features.keys())
+        total_feature_pairs += len(list(features.keys()))
 
         doc_stats = {}
         doc_stats = process_raw_txt(raw_txt, sent_tokenizer)
@@ -184,13 +184,13 @@ if __name__ == "__main__":
 
         doc_types = get_doc_types(raw_txt)
         for t in doc_types:
-            if t in corpus_types.keys():
+            if t in list(corpus_types.keys()):
                 corpus_types[t] += doc_types[t]
             else:
                 corpus_types[t] = doc_types[t]
 
         #loop over chains
-        for key in gold_chains.keys():
+        for key in list(gold_chains.keys()):
             chain = gold_chains[key]
             total_gold_markables += len(chain)
             max_resolutions_possible += ((len(chain)**2 - len(chain)) / 2)
@@ -254,7 +254,7 @@ if __name__ == "__main__":
                     #cases where the antecedent appears "later" in the document
                     #than the anaphor because reconcile labelling IDs
                     #incorrectly.
-                    if fkey in features.keys():
+                    if fkey in list(features.keys()):
                         for fname in deseridata:
                             if feature_utils.feature_name_to_bool(fname,
                                     fkey, features):
@@ -273,80 +273,80 @@ if __name__ == "__main__":
 
 
         #copy the doc stats to the corpus wide stats dictionary
-        for key in doc_stats.keys():
-            if key in corpus_stats.keys():
+        for key in list(doc_stats.keys()):
+            if key in list(corpus_stats.keys()):
                 corpus_stats[key] += doc_stats[key]
             else:
                 corpus_stats[key] = doc_stats[key]
 
     sys.stdout.write("\r \r\n")
-    print "===================================="
-    print "%s corpus statistics" % (sys.argv[1])
-    print "Total documents: %d" % total_docs
-    print "Totals and Averages:"
-    print " Coref Chains:       %5d" % total_coref_chains
-    print " Chain/Doc:          %3.2f" % (total_coref_chains/float(total_docs))
-    print " Chain Len Avg:      %3.2f" % \
-    (total_gold_markables/float(total_coref_chains))
-    print " Markables:          %5d" % total_gold_markables
-    print " Mark/Doc:           %3.2f" % (total_gold_markables/float(total_docs))
-    print " Feature Pairs:      %5d" % (total_feature_pairs)
-    print " Max Rez:            %5d (%3.2f)" % (max_resolutions_possible,
-            max_resolutions_possible/float(total_feature_pairs))
-    print " Min Rez:            %5d" % min_resolutions_possible
-    print " Total Stanford NEs: %5d" % (sum(corpus_nes.values()))
-    print " Total Sundance NEs: %5d" % (sum(corpus_sundance_nes.values()))
-    print " Total tokens:       %5d" % corpus_stats["tokens"]
-    print " Tokens/Doc:         %3.2f" % \
-    (corpus_stats["tokens"]/float(total_docs))
+    print("====================================")
+    print("%s corpus statistics" % (sys.argv[1]))
+    print("Total documents: %d" % total_docs)
+    print("Totals and Averages:")
+    print(" Coref Chains:       %5d" % total_coref_chains)
+    print(" Chain/Doc:          %3.2f" % (total_coref_chains/float(total_docs)))
+    print(" Chain Len Avg:      %3.2f" % \
+    (total_gold_markables/float(total_coref_chains)))
+    print(" Markables:          %5d" % total_gold_markables)
+    print(" Mark/Doc:           %3.2f" % (total_gold_markables/float(total_docs)))
+    print(" Feature Pairs:      %5d" % (total_feature_pairs))
+    print(" Max Rez:            %5d (%3.2f)" % (max_resolutions_possible,
+            max_resolutions_possible/float(total_feature_pairs)))
+    print(" Min Rez:            %5d" % min_resolutions_possible)
+    print(" Total Stanford NEs: %5d" % (sum(corpus_nes.values())))
+    print(" Total Sundance NEs: %5d" % (sum(corpus_sundance_nes.values())))
+    print(" Total tokens:       %5d" % corpus_stats["tokens"])
+    print(" Tokens/Doc:         %3.2f" % \
+    (corpus_stats["tokens"]/float(total_docs)))
     del corpus_stats["tokens"]
-    print " Total types:        %5d" % len(corpus_types.keys())
-    print " Types/Doc:          %3.2f" % \
-    (len(corpus_types.keys())/float(total_docs))
-    print " Total sentences:    %5d" % corpus_stats["sentences"]
-    print " Sent/Doc:           %3.2f" % \
-    (corpus_stats["sentences"]/float(total_docs))
+    print(" Total types:        %5d" % len(list(corpus_types.keys())))
+    print(" Types/Doc:          %3.2f" % \
+    (len(list(corpus_types.keys()))/float(total_docs)))
+    print(" Total sentences:    %5d" % corpus_stats["sentences"])
+    print(" Sent/Doc:           %3.2f" % \
+    (corpus_stats["sentences"]/float(total_docs)))
     del corpus_stats["sentences"]
-    print " Total Tiles:        %5d" % (corpus_stats["tiles"])
-    print " Tiles/Doc:          %3.2f" % (corpus_stats["tiles"]/float(total_docs))
+    print(" Total Tiles:        %5d" % (corpus_stats["tiles"]))
+    print(" Tiles/Doc:          %3.2f" % (corpus_stats["tiles"]/float(total_docs)))
     del corpus_stats["tiles"]
-    print "-----------------------------------"
-    print "Feature statistics"
+    print("-----------------------------------")
+    print("Feature statistics")
     remove_keys=[]
-    for key in corpus_stats.keys():
+    for key in list(corpus_stats.keys()):
         if key.startswith("feature_"):
             remove_keys.append(key)
     remove_keys=sorted(remove_keys)
     for key in remove_keys:
-        print "%20s -> %6d (%3.2f)" % (key.replace("feature_",""),
+        print("%20s -> %6d (%3.2f)" % (key.replace("feature_",""),
                     corpus_stats[key],
-                    corpus_stats[key]/float(total_feature_pairs))
+                    corpus_stats[key]/float(total_feature_pairs)))
     for key in remove_keys:
         del corpus_stats[key]
-    print "-----------------------------------"
-    print "Resolution statistics"
+    print("-----------------------------------")
+    print("Resolution statistics")
 
     keys = sorted(corpus_stats.keys())
     for key in keys:
-        print "%20s -> %6d (%3.2f) (%3.2f)" % (key, corpus_stats[key],
+        print("%20s -> %6d (%3.2f) (%3.2f)" % (key, corpus_stats[key],
                 corpus_stats[key]/float(total_docs),
-                corpus_stats[key]/float(max_resolutions_possible))
-    print "-----------------------------------"
-    print "NE statistics"
-    sorted_nes = sorted(corpus_nes.iteritems(), key=operator.itemgetter(1),
+                corpus_stats[key]/float(max_resolutions_possible)))
+    print("-----------------------------------")
+    print("NE statistics")
+    sorted_nes = sorted(iter(corpus_nes.items()), key=operator.itemgetter(1),
             reverse=True)
     for p in sorted_nes:
-        print "%20s -> %6d" % (p[0], p[1])
+        print("%20s -> %6d" % (p[0], p[1]))
     #keys = sorted(corpus_nes.keys())
     #for key in keys:
     #    print "%20s -> %6d" % (key, corpus_nes[key])
-    print "-----------------------------------"
-    sorted_sundance_nes = sorted(corpus_sundance_nes.iteritems(),
+    print("-----------------------------------")
+    sorted_sundance_nes = sorted(iter(corpus_sundance_nes.items()),
             key=operator.itemgetter(1), reverse=True)
     for p in sorted_sundance_nes:
-        print "%30s -> %6d" % (p[0], p[1])
+        print("%30s -> %6d" % (p[0], p[1]))
     #keys = sorted(corpus_sundance_nes.keys())
     #for key in keys:
         #print "%30s -> %d" % (key, corpus_sundance_nes[key])
 
-    print "-----------------------------------"
+    print("-----------------------------------")

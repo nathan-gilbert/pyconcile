@@ -9,11 +9,11 @@ import sys
 import re
 from collections import defaultdict
 
-import reconcile
-import utils
-from annotation import Annotation
-from annotation_set import AnnotationSet
-from union_find import UnionFind
+from . import reconcile
+from . import utils
+from .annotation import Annotation
+from .annotation_set import AnnotationSet
+from .union_find import UnionFind
 
 def getDuncanAnnots(datadir):
     """Returns an annotation set of the original Duncan annotations. Only
@@ -130,19 +130,19 @@ def getDuncanChains(datadir):
         #print "%d : %d" % (c, uf[c])
 
     final_chains = defaultdict(list)
-    for c in chains.keys():
+    for c in list(chains.keys()):
         final_chains[c] = reconcile.sortAnnotsBySpans(chains[c])
     return final_chains
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <dir>" % (sys.argv[0])
+        print(("Usage: %s <dir>" % (sys.argv[0])))
         sys.exit(1)
 
     chains = getDuncanChains(sys.argv[1])
-    for c in chains.keys():
-        print "%d" % c
+    for c in list(chains.keys()):
+        print(("%d" % c))
         for mention in chains[c]:
-            print "  %s" % mention.ppprint()
-        print
+            print(("  %s" % mention.ppprint()))
+        print()
 

@@ -31,7 +31,7 @@ class Annotation:
         return self.attr.get(prop, "")
 
     def hasProp(self, s):
-        if s in self.attr.keys():
+        if s in list(self.attr.keys()):
             return True
         return False
 
@@ -57,7 +57,7 @@ class Annotation:
         return self.attr
 
     def addProps(self, props):
-        for p in props.keys():
+        for p in list(props.keys()):
             self.attr[p] = props[p]
 
     def getText(self):
@@ -101,7 +101,7 @@ class Annotation:
 
     def getProps2String(self):
         s = ""
-        for key in self.attr.keys():
+        for key in list(self.attr.keys()):
             #don't print empty REFs
             if key == "REF" and self.attr["REF"] == "":
                 continue

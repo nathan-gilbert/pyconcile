@@ -13,26 +13,25 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print "Usage: %s <test-list> <combine-list>" % (sys.argv[0])
+        print("Usage: %s <test-list> <combine-list>" % (sys.argv[0]))
         sys.exit(1)
 
     with open(sys.argv[2], 'r') as unionList:
-        unionFiles = filter(lambda x : not x.startswith("#"), unionList.readlines())
+        unionFiles = [x for x in unionList.readlines() if not x.startswith("#")]
     with open(sys.argv[1], 'r') as testList:
-        testFiles = filter(lambda x : not x.startswith("#"),
-                testList.readlines())
+        testFiles = [x for x in testList.readlines() if not x.startswith("#")]
 
     for tf in testFiles:
         tf = tf.strip()
-        print "Working on {0}".format(tf)
+        print("Working on {0}".format(tf))
         final_pairs = {}
         for un in unionFiles:
             un=un.strip()
             response_pairs = reconcile.getResponsePairs2(tf, "/"+un, 0.0)
-            print len(response_pairs)
+            print(len(response_pairs))
             for pair in response_pairs:
                 key = "%s,%d,%d" % (pair[0], pair[1], pair[2])
-                if key in final_pairs.keys():
+                if key in list(final_pairs.keys()):
                     final_pairs[key] = pair[3] if (pair[3] > final_pairs[key]) else final_pairs[key]
                 else:
                     final_pairs[key] = pair[3]
@@ -51,7 +50,7 @@ if __name__ == "__main__":
         with open(tf + outFile + "/predictions", 'w') as predictFile:
             for un in unionFiles:
                 predictFile.write("# %s" % un)
-            for key in final_pairs.keys():
+            for key in list(final_pairs.keys()):
                 predictFile.write("%s %0.2f\n" % (key, final_pairs[key]))
 
-    print "Finished"
+    print("Finished")

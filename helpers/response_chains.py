@@ -11,7 +11,7 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <dir> <outfile>" % (sys.argv[0])
+        print("Usage: %s <dir> <outfile>" % (sys.argv[0]))
         sys.exit(1)
 
     base_dir = sys.argv[1]
@@ -19,10 +19,10 @@ if __name__ == "__main__":
 
     response_chains = reconcile.getResponseChains(base_dir, cluster_file)
 
-    for k in response_chains.keys():
+    for k in list(response_chains.keys()):
         if len(response_chains[k]) > 1:
-            print "{ ",
-            print "%s" % (" \n\t<- ".join(map(lambda x : x.ppprint(), response_chains[k]))),
-            print "\n}"
+            print("{ ", end=' ')
+            print("%s" % (" \n\t<- ".join([x.ppprint() for x in response_chains[k]])), end=' ')
+            print("\n}")
 
 

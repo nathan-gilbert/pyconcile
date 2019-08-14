@@ -12,7 +12,7 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <first-argument>" % (sys.argv[0])
+        print("Usage: %s <first-argument>" % (sys.argv[0]))
         sys.exit(1)
 
     fList = open(sys.argv[1], 'r')
@@ -32,7 +32,7 @@ if __name__ == "__main__":
                 for ne in nes:
                     #classes[ne] = classes.get(ne, 0) + 1
                     #print "{0:50} => {1}".format(np.getText().replace("\n", " "), ne)
-                    print "{0}".format(ne)
+                    print("{0}".format(ne))
             #for wordnet
             #synsets = np.getATTR("SYNSETS")
             #if len(synsets) > 0:

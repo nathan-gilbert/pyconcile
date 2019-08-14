@@ -12,7 +12,7 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <datadir>" % (sys.argv[0])
+        print("Usage: %s <datadir>" % (sys.argv[0]))
         sys.exit(1)
 
     dataDir = sys.argv[1]
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     graph = pydot.Dot("gold_clusters", graph_type='digraph')
 
     #add in all the NP
-    for key in gold_chains.keys():
+    for key in list(gold_chains.keys()):
         chain = gold_chains[key]
         prev = None
         for mention in chain:
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     i = 0
     for s in gold_sentences:
         subg = pydot.Subgraph('', rank='same')
-        for key in gold_chains.keys():
+        for key in list(gold_chains.keys()):
             chain = gold_chains[key]
             for mention in chain:
                 if s.contains(mention):

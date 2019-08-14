@@ -6,7 +6,7 @@
 # Created By : Nathan Gilbert
 #
 import string
-import data
+from . import data
 
 from collections import defaultdict
 
@@ -313,7 +313,7 @@ def getConjunction(tok_tags):
             break
     #print
     #print i,j
-    return ' '.join(map(lambda x : x[0], final_tt[i:j]))
+    return ' '.join([x[0] for x in final_tt[i:j]])
 
 def getReconcileHead(text):
     """
@@ -371,10 +371,10 @@ def getHead(annot):
     Assumes the annotation has the "TAGS" and "TOKENS" properties.
     """
     head = []
-    tok_tags = zip(annot.getATTR("TOKENS"), annot.getATTR("TAGS"))
+    tok_tags = list(zip(annot.getATTR("TOKENS"), annot.getATTR("TAGS")))
     #print tok_tags
 
-    if "CC" in map(lambda x : x[1], tok_tags):
+    if "CC" in [x[1] for x in tok_tags]:
         cc_head = getConjunction(tok_tags)
         #print cc_head
         return cc_head
@@ -404,8 +404,8 @@ def getHead(annot):
     head = head[:i]
 
     final_head = ""
-    if all(map(lambda x : x[1].startswith("NNP"), head)):
-        final_head = ' '.join(map(lambda x : x[0], head))
+    if all([x[1].startswith("NNP") for x in head]):
+        final_head = ' '.join([x[0] for x in head])
     elif head[-1][1] == "NNP":
         #the case where we have NN NNP "first-year Senator"
         i = 0
@@ -415,7 +415,7 @@ def getHead(annot):
                 continue
             else:
                 break
-        final_head = ' '.join(map(lambda x : x[0], head[i:]))
+        final_head = ' '.join([x[0] for x in head[i:]])
     else:
         #the case where we have NNP NNP NN "Senator's assistant
         final_head = head[-1][0]
@@ -432,7 +432,7 @@ def getMods(annot):
     #NOTE: this implementation pretty much ignores #s, right now for instances
     #$300 million, the head is "300 million"...
     head = []
-    tok_tags = zip(annot.getATTR("TOKENS"), annot.getATTR("TAGS"))
+    tok_tags = list(zip(annot.getATTR("TOKENS"), annot.getATTR("TAGS")))
     #print tok_tags
 
     if len(tok_tags) == 1:
@@ -461,12 +461,12 @@ def getMods(annot):
             break
     head = head[:i]
 
-    if all(map(lambda x : x[1].startswith("NNP"), head)):
+    if all([x[1].startswith("NNP") for x in head]):
         return ' '
-    elif all(map(lambda x : x[1].startswith("NN"), head)):
+    elif all([x[1].startswith("NN") for x in head]):
         #return the case where we have multiple common nouns in a row, return
         #all modifiying common nouns
-        return ' '.join(map(lambda x : x[0], head[:-1]))
+        return ' '.join([x[0] for x in head[:-1]])
     elif head[-1][1].startswith("NNP") and len(head) > 1:
         #the case where we have NN NNP "first-year Senator"
         i = 0
@@ -475,7 +475,7 @@ def getMods(annot):
                 i += 1
             else:
                 break
-        return ' '.join(map(lambda x : x[0], head[:i]))
+        return ' '.join([x[0] for x in head[:i]])
     elif head[-1][1].startswith("NN") and len(head) > 1:
         #the case where we have NNP NNP NN "Senator's assistant
         i = 0
@@ -484,7 +484,7 @@ def getMods(annot):
                 i += 1
             else:
                 break
-        return ' '.join(map(lambda x : x[0], head[:i]))
+        return ' '.join([x[0] for x in head[:i]])
     else:
         return ' '
 
@@ -527,4 +527,4 @@ if __name__ == "__main__":
     sundance_hypernyms("/home/ngilbert/xspace/sundance-v5.1/data/semtree.txt")
 
     for path in sun_hype:
-        print path
+        print(path)

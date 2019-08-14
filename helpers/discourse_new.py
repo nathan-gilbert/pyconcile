@@ -13,7 +13,7 @@ from pyconcile import utils
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <file-list>" % (sys.argv[0])
+        print("Usage: %s <file-list>" % (sys.argv[0]))
         sys.exit(1)
 
     files=[]
@@ -26,7 +26,7 @@ if __name__ == "__main__":
         if f.startswith("#"):
             continue
         f=f.strip()
-        print "Working on document: {0}".format(f)
+        print("Working on document: {0}".format(f))
 
         tokens = reconcile.getTokens(f)
         pos = reconcile.getPOS(f)
@@ -35,7 +35,7 @@ if __name__ == "__main__":
         gold_chains=reconcile.getGoldChains(f)
 
         #loop over them and keep track of the terms that are discourse_new
-        for gc in gold_chains.keys():
+        for gc in list(gold_chains.keys()):
             first=True
             for mention in gold_chains[gc]:
                 #add in tokens and tags
@@ -56,10 +56,10 @@ if __name__ == "__main__":
 
                 total_counts[mention_head] = total_counts.get(mention_head, 0) + 1
     dn_prob = {}
-    for key in dn.keys():
+    for key in list(dn.keys()):
         dn_prob[key] = float(dn[key]) / total_counts[key]
 
-    sorted_probs = sorted(dn_prob.iteritems(), key=operator.itemgetter(1),
+    sorted_probs = sorted(iter(dn_prob.items()), key=operator.itemgetter(1),
             reverse=True)
 
     num = 0 
@@ -67,8 +67,8 @@ if __name__ == "__main__":
         if total_counts[sorted_probs[i][0]] < 2:
             continue
 
-        print "{0} : {1} : {2}".format(sorted_probs[i][0], sorted_probs[i][1],
-                total_counts[sorted_probs[i][0]])
+        print("{0} : {1} : {2}".format(sorted_probs[i][0], sorted_probs[i][1],
+                total_counts[sorted_probs[i][0]]))
         num += 1
 
         if num > 100:

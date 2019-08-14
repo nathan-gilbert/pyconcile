@@ -12,7 +12,7 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <filelist>" % (sys.argv[0])
+        print("Usage: %s <filelist>" % (sys.argv[0]))
         sys.exit(1)
 
     fList = open(sys.argv[1], 'r')
@@ -20,12 +20,12 @@ if __name__ == "__main__":
         if f.startswith("#"):
             continue
         f=f.strip()
-        print "Working on document: %s" %f
+        print("Working on document: %s" %f)
 
         nps=reconcile.getNPs_annots(f)
 
         for np in nps:
             if np.getText() == "":
-                print np
+                print(np)
 
     fList.close()

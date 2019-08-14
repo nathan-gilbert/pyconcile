@@ -9,7 +9,7 @@ import sys
 import string
 import gzip
 
-import reconcile
+from . import reconcile
 
 default_features = ("DocNo", "ID1", "ID2", "SoonStr", "ProStr", "ProComp",
 "PNStr_I", "PNStr_C", "PNStr_D", "WordsStr", "WordOverlap", "Modifier",
@@ -45,12 +45,12 @@ def getFeatures(datadir, feature_dir,toGet=("all")):
         try:
             import os
             import subprocess
-            from cStringIO import StringIO
+            from io import StringIO
             p = subprocess.Popen(["zcat", os.path.join(datadir+"/"+feature_dir+"/",
                 "features.arff.gz")], stdout=subprocess.PIPE)
             featuresFile = StringIO(p.communicate()[0])
         except:
-            print "Features file note found"
+            print("Features file note found")
 
     feature_names = []
     features = {}
@@ -58,7 +58,7 @@ def getFeatures(datadir, feature_dir,toGet=("all")):
         line = line.strip()
         if line.startswith("@ATTRIBUTE"):
             line = line.replace("@ATTRIBUTE","").strip()
-            tokens = map(string.strip, line.split("\t"))
+            tokens = list(map(string.strip, line.split("\t")))
             feature_names.append(tokens[0])
         elif line.startswith("@") or line == "":
             continue
@@ -93,14 +93,14 @@ def getFeatures2(datadir, feature_dir):
         featuresFile = gzip.open(datadir+"/"+feature_dir+"/features.arff.gz", 'r')
 
     allLines = featuresFile.readlines()
-    featureLines = filter(lambda x : x.startswith("@ATTRIBUTE"), allLines)
-    dataLines = filter(lambda x : not x.startswith("@"), allLines)
+    featureLines = [x for x in allLines if x.startswith("@ATTRIBUTE")]
+    dataLines = [x for x in allLines if not x.startswith("@")]
     featuresFile.close()
 
     features_names = []
     for line in featureLines:
         line = line.replace("@ATTRIBUTE","").strip()
-        tokens = map(string.strip, line.split("\t"))
+        tokens = list(map(string.strip, line.split("\t")))
         features_names.append(tokens[0])
 
     features = {}
@@ -167,7 +167,7 @@ def feature_name_to_bool(fname, fkey, features):
     if wname is None:
         return False
 
-    if fkey in features.keys():
+    if fkey in list(features.keys()):
         if features[fkey].get(wname, 0.0) > 0:
             return True
     return False
@@ -179,8 +179,8 @@ def get_dt_path(pair_features, tree_file):
     """
     #read in the tree
     treeFile = open(tree_file, 'r')
-    treeLines = filter(lambda x : x != '', map(string.strip,
-        treeFile.readlines()))
+    treeLines = [x for x in map(string.strip,
+        treeFile.readlines()) if x != '']
     treeFile.close()
     del treeLines[0] #remove first 2 lines
     del treeLines[0]
@@ -201,7 +201,7 @@ def get_dt_path(pair_features, tree_file):
             if stay_at_depth and (prev_depth != depth):
                 continue
 
-            tokens = map(string.strip, line.split())
+            tokens = list(map(string.strip, line.split()))
             feature_name = tokens[0]
             feature_operator = tokens[1]
             feature_value = tokens[2]
@@ -215,7 +215,7 @@ def get_dt_path(pair_features, tree_file):
 
             #print "%s %s %s" % (feature_name, feature_operator, feature_value)
 
-            if feature_name in pair_features.keys():
+            if feature_name in list(pair_features.keys()):
                 #this means we have a non-zero instance
                 pair_value = float(pair_features[feature_name])
             else:
@@ -272,12 +272,12 @@ def get_dt_path(pair_features, tree_file):
                     if terminus:
                         terminus = False
             else:
-                print "Unknown operator %s"  % feature_operator
+                print(("Unknown operator %s"  % feature_operator))
             prev_depth = depth
     return path
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <first-argument>" % (sys.argv[0])
+        print(("Usage: %s <first-argument>" % (sys.argv[0])))
         sys.exit(1)
 

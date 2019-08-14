@@ -7,8 +7,8 @@
 import numpy
 from collections import defaultdict
 
-import reconcile
-from annotation import Annotation
+from . import reconcile
+from .annotation import Annotation
 
 def print_matching_nps(annots1, annots2):
     match_nps(annots1, annots2)
@@ -16,10 +16,10 @@ def print_matching_nps(annots1, annots2):
     unmatched=0
     for a in annots2:
         if a.getATTR("MATCHED") > -1:
-            print "%d -> %d MATCHED" % (a.getID(), a.getATTR("MATCHED"))
+            print("%d -> %d MATCHED" % (a.getID(), a.getATTR("MATCHED")))
             matched+= 1
         else:
-            print "%d -> %d NOT-MATCHED" % (a.getID(), a.getATTR("MATCHED"))
+            print("%d -> %d NOT-MATCHED" % (a.getID(), a.getATTR("MATCHED")))
             unmatched+=1
 
 def spanMatch(a1, a2):
@@ -133,7 +133,7 @@ def equivalence_classes(annots):
 def print_equiv_classes(gold, response):
     gold_equiv = equivalence_classes(gold)
     g = ""
-    for c in gold_equiv.keys():
+    for c in list(gold_equiv.keys()):
         g += "{"
         for mention in gold_equiv[c]:
             #g = g + mention.getATTR("LETTER") + ","
@@ -141,11 +141,11 @@ def print_equiv_classes(gold, response):
         if g[-1] == ",":
             g = g[:-1]
             g+="}"
-    print "Gold: " + g
+    print("Gold: " + g)
 
     response_equiv = equivalence_classes(response)
     r = ""
-    for c in response_equiv.keys():
+    for c in list(response_equiv.keys()):
         r += "{"
         for mention in response_equiv[c]:
             #r = r + mention.getATTR("LETTER") + ","
@@ -155,7 +155,7 @@ def print_equiv_classes(gold, response):
         if r[-1] == ",":
             r = r[:-1]
             r+="}"
-    print "Response: " + r
+    print("Response: " + r)
 
 def accuracy(gold, response):
     """
@@ -166,7 +166,7 @@ def accuracy(gold, response):
     for pair in response:
         antecedent = pair[0]
         anaphor = pair[1]
-        for key in gold.keys():
+        for key in list(gold.keys()):
             chain = gold[key]
             foundAntecedent = False
             foundAnaphor = False
@@ -185,7 +185,7 @@ def accuracy(gold, response):
 
 def correctpair(gold, antecedent, anaphor):
     correct = 0
-    for key in gold.keys():
+    for key in list(gold.keys()):
         chain = gold[key]
         foundAntecedent = False
         foundAnaphor = False
@@ -201,12 +201,11 @@ def correctpair(gold, antecedent, anaphor):
 def total_possible_links(annots1, annots2):
     match_nps(annots1, annots2)
 
-    s1 = filter(lambda x : x >= 0, map(lambda x : \
-        x.getATTR("MATCHED"), annots2))
-    s2 = map(lambda x : x.getID(), annots1)
+    s1 = [x for x in [x.getATTR("MATCHED") for x in annots2] if x >= 0]
+    s2 = [x.getID() for x in annots1]
     matches = len(s1) #the number of overlapping nps
     not_matched1 = len(list(set(s2) - set(s1))) #the number of nps in 1
-    not_matched2 = len(filter(lambda x : int(x.getATTR("MATCHED")) < 0, annots2))
+    not_matched2 = len([x for x in annots2 if int(x.getATTR("MATCHED")) < 0])
     return matches + not_matched1 + not_matched2 - 1
 
 def compute_d(annots1, annots2):
@@ -215,8 +214,8 @@ def compute_d(annots1, annots2):
     equiv2 = equivalence_classes(annots2)
     match_nps(annots1, annots2)
     pCA = defaultdict(list)
-    ids_not_matched = map(lambda x : x.getID(), annots1)
-    for k in equiv2.keys():
+    ids_not_matched = [x.getID() for x in annots1]
+    for k in list(equiv2.keys()):
         for mention in equiv2[k]:
             if mention.getATTR("MATCHED") == -1:
                 #if it isn't matched, it's already it's own cluster
@@ -230,11 +229,11 @@ def compute_d(annots1, annots2):
     #the intersection between CA1 & pCA
     CA1_pCA = defaultdict(list)
     match = 0
-    for k in equiv1.keys():
-        ids = map(lambda x : int(x.getATTR("ID")), equiv1[k])
+    for k in list(equiv1.keys()):
+        ids = [int(x.getATTR("ID")) for x in equiv1[k]]
 
-        for k2 in pCA.keys():
-            ids2 = map(lambda x : x.getATTR("MATCHED"), pCA[k2])
+        for k2 in list(pCA.keys()):
+            ids2 = [x.getATTR("MATCHED") for x in pCA[k2]]
 
             if set(ids) == set(ids2):
                 #print ids2
@@ -242,14 +241,14 @@ def compute_d(annots1, annots2):
                 match+=1
 
     #gather all the things that were not in CA
-    for k in pCA.keys():
+    for k in list(pCA.keys()):
         if int(k) > 0:
             continue
         if len(pCA[k]) == 1 and pCA[k][0].getATTR("MATCHED") == -1:
             #print "%s: %d (%s)" % (k, pCA[k][0].getID(), pCA[k][0].getATTR("MATCHED"))
             CA1_pCA[match].extend(pCA[k])
             match+=1
-    d1 = len(CA1_pCA.keys()) - 1
+    d1 = len(list(CA1_pCA.keys())) - 1
     return float(d1)
 
 def vilain_num(gold, response):
@@ -258,15 +257,15 @@ def vilain_num(gold, response):
     gold_equiv = equivalence_classes(gold)
 
     total_num = 0.0
-    for k in gold_equiv.keys():
+    for k in list(gold_equiv.keys()):
         #this is the cardinality of this partition in the gold chain
         C = len(gold_equiv[k])
 
         #first get all the nps that match nps in this gold chain
         matched_nps = [mention for mention in response if \
                 mention.getATTR("MATCHED") in \
-                map(lambda x : x.getID(), gold_equiv[k])]
-        matched_np_ids = map(lambda x : x.getATTR("COREF_ID"), matched_nps)
+                [x.getID() for x in gold_equiv[k]]]
+        matched_np_ids = [x.getATTR("COREF_ID") for x in matched_nps]
 
         #the number of different ids in the response set is the number of
         #'links' needed to make the response look like the gold.
@@ -282,7 +281,7 @@ def vilain_denom(gold):
     """The MUC Denominator """
     gold_equiv = equivalence_classes(gold)
     total_denom = 0.0
-    for k in gold_equiv.keys():
+    for k in list(gold_equiv.keys()):
         #this is the cardinality of this partition in the gold chain
         C = len(gold_equiv[k])
         total_denom += (C - 1)
@@ -379,7 +378,7 @@ if __name__ == "__main__":
         muc_score = vilain(annots1, annots2)
         k = kappa(annots1, annots2)
         a = alpha(annots1, annots2)
-        print "Doc %s\nkappa: %0.6f" % (d, k)
-        print "alpha: %0.2f" % (a)
-        print "MUCScore: (P/R/F) ",
-        print "(%0.2f/%0.2f/%0.2f)" %muc_score
+        print("Doc %s\nkappa: %0.6f" % (d, k))
+        print("alpha: %0.2f" % (a))
+        print("MUCScore: (P/R/F) ", end=' ')
+        print("(%0.2f/%0.2f/%0.2f)" %muc_score)

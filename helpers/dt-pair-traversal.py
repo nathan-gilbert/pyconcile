@@ -48,8 +48,8 @@ if __name__ == "__main__":
 
     #read in the tree
     treeFile = open(options.treefile, 'r')
-    treeLines = filter(lambda x : x != "", map(string.strip,
-        treeFile.readlines()))
+    treeLines = [x for x in map(string.strip,
+        treeFile.readlines()) if x != ""]
     treeFile.close()
     del treeLines[0] #remove first 2 lines
     del treeLines[0]
@@ -69,7 +69,7 @@ if __name__ == "__main__":
                     or ((prev_depth == depth) and not goDown):
                 text = line.replace("|","").strip()
 
-                tokens = map(string.strip, text.split())
+                tokens = list(map(string.strip, text.split()))
                 feat = tokens[0]
                 op = tokens[1]
                 value = tokens[2]
@@ -97,6 +97,6 @@ if __name__ == "__main__":
                     goDown = False
                 prev_depth = depth
 
-    print " %s <- %s" % (antecedent.ppprint(), anaphor.ppprint())
-    print " \n -> ".join(path)
+    print(" %s <- %s" % (antecedent.ppprint(), anaphor.ppprint()))
+    print(" \n -> ".join(path))
 

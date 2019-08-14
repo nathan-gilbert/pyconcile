@@ -51,7 +51,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     fileList = open(options.fileList, 'r')
-    files = filter(lambda x : not x.startswith("#"), fileList.readlines())
+    files = [x for x in fileList.readlines() if not x.startswith("#")]
     stringMatchPairs = defaultdict(list)
     heuristicPairs = defaultdict(list)
     pronounPairs = defaultdict(list)
@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
     sys.stdout.write("\r")
     totalDocs = 0
-    print "Reading in %d files..." % (options.D)
+    print("Reading in %d files..." % (options.D))
     while (totalDocs < options.D):
         f = files.pop(0)
         if f.startswith("#"):
@@ -91,8 +91,8 @@ if __name__ == "__main__":
     #output all string match into one file.
     outList = defaultdict(list)
     if options.write:
-        print "Writing files string match files..."
-        for f in stringMatchPairs.keys():
+        print("Writing files string match files...")
+        for f in list(stringMatchPairs.keys()):
             DOCUMENT=f.strip()
             outList["string"].append(int(f[f.rfind("/")+1:]))
             filename = f+"/annotations/sep_string"
@@ -100,8 +100,8 @@ if __name__ == "__main__":
             header = "this doc: %d string pairs %d docs total" % (len(collapsedStrPairs), totalDocs)
             outputCollapsed(filename, collapsedStrPairs, header)
 
-        print "Writing files heuristic files..."
-        for f in heuristicPairs.keys():
+        print("Writing files heuristic files...")
+        for f in list(heuristicPairs.keys()):
             DOCUMENT=f.strip()
             outList["heur"].append(int(f[f.rfind("/")+1:]))
             filename = f+"/annotations/sep_heuristic"
@@ -109,8 +109,8 @@ if __name__ == "__main__":
             header = "this doc: %d heuristic pairs %d docs total" % (len(collapsedHeurPairs), totalDocs)
             outputCollapsed(filename, collapsedHeurPairs, header)
 
-        print "Writing files pronoun files..."
-        for f in heuristicPairs.keys():
+        print("Writing files pronoun files...")
+        for f in list(heuristicPairs.keys()):
             DOCUMENT=f.strip()
             outList["pronoun"].append(int(f[f.rfind("/")+1:]))
             filename = f+"/annotations/sep_pronoun"
@@ -118,7 +118,7 @@ if __name__ == "__main__":
             header = "this doc: %d heuristic pairs %d docs total" % (len(collapsedProPairs), totalDocs)
             outputCollapsed(filename, collapsedProPairs, header)
 
-        for k in outList.keys():
+        for k in list(outList.keys()):
             out = open(options.outdir+"/"+options.outfile+"_"+k, 'w')
             for l in outList[k]:
                 out.write(str(l)+"\n")

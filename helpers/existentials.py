@@ -84,16 +84,16 @@ if __name__ == "__main__":
 
         if options.verbose:
             for e in existentials:
-                print "%s $!$ [sem=%s, num=%s, mod=%s, def=%s, ind=%s]" % \
+                print("%s $!$ [sem=%s, num=%s, mod=%s, def=%s, ind=%s]" % \
                 (e.pprint(),e.getATTR("semantic"), e.getATTR("number"),
                         e.getATTR("modifier"), e.getATTR("is_definite"),
-                        e.getATTR("is_indefinite"))
+                        e.getATTR("is_indefinite")))
 
         if options.evaluate:
             gold = gold_singletons(directory)
             s = score.singleton_accuracy(gold, existentials, True)
-            print "Document Score:"
-            print "  Accuracy: %0.2f with %d Correct, %d Incorrect and %d Markable Errors" % (s[0], s[1], s[2], s[3])
+            print("Document Score:")
+            print("  Accuracy: %0.2f with %d Correct, %d Incorrect and %d Markable Errors" % (s[0], s[1], s[2], s[3]))
 
         if options.write:
             output(existentials, options.outfile)
@@ -103,6 +103,6 @@ if __name__ == "__main__":
 
     if options.verbose:
         #print out the counts:
-        print "# of existentials: %d" % len(total_existentials)
-        print "Counts: %d proper, %d pronoun, %d common" % (counts["proper"],
-                counts["pronoun"], counts["common"])
+        print("# of existentials: %d" % len(total_existentials))
+        print("Counts: %d proper, %d pronoun, %d common" % (counts["proper"],
+                counts["pronoun"], counts["common"]))

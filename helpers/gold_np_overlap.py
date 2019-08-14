@@ -11,7 +11,7 @@ from pyconcile import reconcile
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s <dir>" % (sys.argv[0])
+        print("Usage: %s <dir>" % (sys.argv[0]))
         sys.exit(1)
 
     #read in the response nps
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     for r_np in response_nps:
         for g_np in gs_nps:
             if g_np.getATTR("MATCHED") == r_np.getID():
-                print "C :%s" % r_np.pprint()
+                print("C :%s" % r_np.pprint())
                 break
         else:
-            print "I :%s" % r_np.pprint()
+            print("I :%s" % r_np.pprint())

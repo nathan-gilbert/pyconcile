@@ -12,7 +12,7 @@ from optparse import OptionParser
 from collections import defaultdict
 from time import localtime, strftime
 
-import reconcile
+from . import reconcile
 
 def collapse(pairs):
     """take a set of pairs of nps collect from various matching heuristics, and (tries to) collapses them all into coherent clusters"""
@@ -38,11 +38,11 @@ def collapse(pairs):
         if ref == -1:
             continue
         else:
-            for span in span2ids.keys():
-                if a.getID() in map(lambda x : x.getID(), span2ids[span]):
+            for span in list(span2ids.keys()):
+                if a.getID() in [x.getID() for x in span2ids[span]]:
                     ref2span[ref].append(span)
     ID = 0
-    for k in reconcile.sortBySpans(span2ids.keys()):
+    for k in reconcile.sortBySpans(list(span2ids.keys())):
         start = int(k.split(":")[0])
         end = int(k.split(":")[1])
         new_annotations.append(reconcile.make_new_annotation(start, end, ID, span2ids[k]))
@@ -60,8 +60,8 @@ def collapse(pairs):
             old_ref = a.attr["REF"]
             a.attr["OLD_REF"] = old_ref
             ref_set = set(map(int, a.attr["REF"].split(",")))
-            for key in span2ids.keys():
-                id_set = set(map(lambda x : x.getID(), span2ids[key]))
+            for key in list(span2ids.keys()):
+                id_set = set([x.getID() for x in span2ids[key]])
                 #check to see if the ref set is really pointing to the same span
                 if ref_set <= id_set:
                     new_ref = span2newids[key]
@@ -100,13 +100,13 @@ def outputCollapsed(filename, annots, header):
     outFile.close()
 
 def ppcollapsed(annots, header):
-    print header
+    print(header)
     line = 0
     for a in annots:
         if a.attr.get("REF", "") == "":
-            print "%d\t%d,%d\tstring\tCOREF\tID=\"%d\"\t" % (line, a.getStart(), a.getEnd(), a.getID())
+            print(("%d\t%d,%d\tstring\tCOREF\tID=\"%d\"\t" % (line, a.getStart(), a.getEnd(), a.getID())))
         else:
-            print "%d\t%d,%d\tstring\tCOREF\tID=\"%d\"\tREF=\"%s\"\tTYPE=\"%s\"\t" % (line, a.getStart(), a.getEnd(), a.getID(), a.attr["REF"], a.attr["TYPE"])
+            print(("%d\t%d,%d\tstring\tCOREF\tID=\"%d\"\tREF=\"%s\"\tTYPE=\"%s\"\t" % (line, a.getStart(), a.getEnd(), a.getID(), a.attr["REF"], a.attr["TYPE"])))
         line += 1
 
 if __name__ == "__main__":
@@ -127,7 +127,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     fileList = open(options.fileList, 'r')
-    files = filter(lambda x : not x.startswith("#"), fileList.readlines())
+    files = [x for x in fileList.readlines() if not x.startswith("#")]
     fileList.close()
 
     if options.D == -1:
@@ -136,7 +136,7 @@ if __name__ == "__main__":
     pairs = defaultdict(list)
     totalDocs = 0
     for f in map(string.strip, files):
-        print "Working on document: %s" % f
+        print(("Working on document: %s" % f))
         if options.pronoun:
             pairs[f].extend(reconcile.getPronounPairs(f))
         elif options.meddle:
@@ -157,6 +157,6 @@ if __name__ == "__main__":
             outputCollapsed(filename, collapsedPairs, header)
 
         totalDocs += 1
-        print "Docs completed: %d <- %s" % (totalDocs, f)
+        print(("Docs completed: %d <- %s" % (totalDocs, f)))
         if totalDocs >= options.D:
             break
